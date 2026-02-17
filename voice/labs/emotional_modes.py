@@ -1,0 +1,17 @@
+EMOTIONAL_MODES = [
+    "romantic",
+    "poetic",
+    "dramatic",
+    "heroic",
+    "sad",
+    "calm",
+    "passionate",
+    "sarcastic",
+    "humor",
+    "critical",
+    "aggressive",
+    "soft",
+    "reflective",
+    "spiritual",
+    "motivational",
+]

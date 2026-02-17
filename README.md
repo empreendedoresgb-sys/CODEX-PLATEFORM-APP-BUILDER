@@ -7,6 +7,7 @@ Production-ready scaffold implementing the **Book of Charge** architecture with:
 - anti-drift and validation pipeline
 - voice-first API surfaces
 - memory-efficient retrieval-oriented design stubs
+- creative Voice Labs and preset functionality
 
 ## Run API
 
@@ -19,3 +20,14 @@ uvicorn api.rest_endpoints:app --reload
 ```bash
 pytest
 ```
+
+## Key API endpoints
+
+- `POST /v1/generate/text`
+- `POST /v1/generate/voice`
+- `POST /v1/generate/multilingual`
+- `POST /v1/validate`
+- `GET /v1/voice/templates`
+- `POST /v1/voice/presets`
+- `GET /v1/voice/presets`
+- `GET /v1/monetization/tiers/{tier_name}`
