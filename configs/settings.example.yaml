@@ -1,0 +1,8 @@
+app:
+  name: kriolgb-ia-voice
+  environment: development
+voice:
+  latency_target_ms: 150
+linguistic:
+  canonical_reference: TIRA BOKA NA BINHU
+  modification_key: Ntopy-4Develop
