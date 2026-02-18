@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kriolgb-ia.com/schemas/voice_profile.schema.json",
+  "title": "KriolGB Voice Profile",
+  "type": "object",
+  "required": [
+    "profile_id",
+    "voice_id",
+    "language",
+    "phonetic_mode",
+    "cadence_type",
+    "emotional_mode",
+    "character_mode",
+    "created_at"
+  ],
+  "properties": {
+    "profile_id": { "type": "string", "minLength": 3 },
+    "voice_id": { "type": "string", "minLength": 3 },
+    "language": { "type": "string", "enum": ["kriol", "pt", "fr", "en"] },
+    "phonetic_mode": { "type": "string", "const": "african" },
+    "cadence_type": {
+      "type": "string",
+      "enum": ["slow_ceremonial", "fast_market_speech", "griot_storytelling", "political_rally_rhythm"]
+    },
+    "emotional_mode": { "type": "string" },
+    "character_mode": { "type": "string" },
+    "pitch": { "type": "number", "minimum": 0.5, "maximum": 2.0, "default": 1.0 },
+    "tempo": { "type": "number", "minimum": 0.5, "maximum": 2.0, "default": 1.0 },
+    "energy": { "type": "number", "minimum": 0.1, "maximum": 3.0, "default": 1.0 },
+    "created_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

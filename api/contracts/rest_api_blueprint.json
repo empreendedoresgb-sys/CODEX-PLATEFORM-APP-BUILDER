@@ -1,0 +1,128 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "KriolGB IA Voice REST API Blueprint",
+    "version": "v1",
+    "description": "Production blueprint covering landing, voice labs, import/export, QR, transcription, billing, and validation-first generation."
+  },
+  "servers": [
+    { "url": "https://api.kriolgb-ia.com/v1" }
+  ],
+  "paths": {
+    "/generate/text": {
+      "post": {
+        "summary": "Generate validated Kriol text",
+        "operationId": "generateText"
+      }
+    },
+    "/generate/voice": {
+      "post": {
+        "summary": "Generate voice with Voice Labs controls",
+        "operationId": "generateVoice"
+      }
+    },
+    "/generate/multilingual": {
+      "post": {
+        "summary": "Generate multilingual output preserving voice identity",
+        "operationId": "generateMultilingual"
+      }
+    },
+    "/validate": {
+      "post": {
+        "summary": "Run Ntopy-4 + lexical + semantic validation",
+        "operationId": "validateOutput"
+      }
+    },
+    "/voice/templates": {
+      "get": {
+        "summary": "List creative voice templates",
+        "operationId": "listVoiceTemplates"
+      }
+    },
+    "/voice/presets": {
+      "get": {
+        "summary": "List presets",
+        "operationId": "listPresets"
+      },
+      "post": {
+        "summary": "Create preset",
+        "operationId": "createPreset"
+      }
+    },
+    "/files/import": {
+      "post": {
+        "summary": "Import TXT, DOCX, PDF, MP3, WAV, MP4, MOV, PNG, JPG, WEBM",
+        "operationId": "importFile"
+      }
+    },
+    "/files/export": {
+      "post": {
+        "summary": "Export MP3, WAV, SRT, TXT, JSON transcript, preset config",
+        "operationId": "exportFile"
+      }
+    },
+    "/qr/create": {
+      "post": {
+        "summary": "Create secure QR link",
+        "operationId": "createQr"
+      }
+    },
+    "/qr/{token}/stats": {
+      "get": {
+        "summary": "Get QR analytics",
+        "operationId": "qrStats"
+      }
+    },
+    "/transcription/analyze": {
+      "post": {
+        "summary": "Transcribe and run Kriol-priority linguistic analysis",
+        "operationId": "transcribeAnalyze"
+      }
+    },
+    "/voice/clone/train": {
+      "post": {
+        "summary": "Train cloned voice from sample",
+        "operationId": "trainVoiceClone"
+      }
+    },
+    "/billing/invoices": {
+      "get": {
+        "summary": "List invoices",
+        "operationId": "listInvoices"
+      },
+      "post": {
+        "summary": "Generate invoice",
+        "operationId": "generateInvoice"
+      }
+    },
+    "/billing/webhook/payment": {
+      "post": {
+        "summary": "Payment webhook callback",
+        "operationId": "paymentWebhook"
+      }
+    },
+    "/system/health": {
+      "get": {
+        "summary": "Health endpoint",
+        "operationId": "systemHealth"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "TranscriptionAnalysisResult": {
+        "type": "object",
+        "required": ["language_detected", "confidence", "ntopy4_compliance"],
+        "properties": {
+          "language_detected": { "type": "string" },
+          "confidence": { "type": "number" },
+          "operators_detected": { "type": "array", "items": { "type": "string" } },
+          "oral_markers": { "type": "array", "items": { "type": "string" } },
+          "cultural_keywords": { "type": "array", "items": { "type": "string" } },
+          "semantic_intent": { "type": "string" },
+          "ntopy4_compliance": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}
