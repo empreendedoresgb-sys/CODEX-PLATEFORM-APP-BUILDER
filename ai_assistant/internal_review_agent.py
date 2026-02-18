@@ -1,2 +1,10 @@
+from datetime import UTC, datetime
+
+
 def review(output: dict) -> dict:
-    return output
+    reviewed = dict(output)
+    reviewed["assistant_review"] = {
+        "status": "reviewed",
+        "timestamp": datetime.now(UTC).isoformat(),
+    }
+    return reviewed

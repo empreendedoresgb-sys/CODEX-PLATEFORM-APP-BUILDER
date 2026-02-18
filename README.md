@@ -9,6 +9,7 @@ Production-ready scaffold implementing the **Book of Charge** architecture with:
 - memory-efficient retrieval-oriented design stubs
 - creative Voice Labs and preset functionality
 - full production database schema and REST API blueprint artifacts
+- AI Assistant review/refinement hook in core processing pipeline
 
 ## Run API
 
