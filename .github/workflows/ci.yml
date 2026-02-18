@@ -8,20 +8,27 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install deps
+
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install fastapi uvicorn pydantic pytest httpx
-      - name: Run tests
+
+      - name: Run all tests
         run: pytest
+
       - name: Contract Parity Check
         run: pytest testing/unit_tests/test_contract_parity.py
+
       - name: Validate JSON Schema syntax
         run: python -m json.tool schemas/voice_profile.schema.json > /dev/null
+
       - name: Validate REST API blueprint JSON syntax
         run: python -m json.tool api/contracts/rest_api_blueprint.json > /dev/null
