@@ -32,6 +32,16 @@ pytest
 - `POST /v1/voice/presets`
 - `GET /v1/voice/presets`
 - `GET /v1/monetization/tiers/{tier_name}`
+- `POST /v1/files/import`
+- `POST /v1/files/export`
+- `POST /v1/qr/create`
+- `GET /v1/qr/{token}/stats`
+- `POST /v1/transcription/analyze`
+- `POST /v1/voice/clone/train`
+- `GET /v1/billing/invoices`
+- `POST /v1/billing/invoices`
+- `POST /v1/billing/webhook/payment`
+- `GET /v1/system/health`
 
 ## Architecture artifacts
 

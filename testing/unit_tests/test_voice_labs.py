@@ -20,11 +20,14 @@ def test_get_tier_unknown_fails() -> None:
 
 
 def test_api_templates_endpoint_if_fastapi_available() -> None:
-    fastapi = pytest.importorskip("fastapi")
-    from fastapi.testclient import TestClient
+    pytest.importorskip("fastapi")
+    try:
+        from fastapi.testclient import TestClient
+    except RuntimeError as exc:
+        pytest.skip(f"TestClient unavailable: {exc}")
+
     from api.rest_endpoints import app
 
-    assert fastapi is not None
     client = TestClient(app)
     response = client.get("/v1/voice/templates")
     assert response.status_code == 200

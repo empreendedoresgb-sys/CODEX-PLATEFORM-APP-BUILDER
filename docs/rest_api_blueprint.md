@@ -1,6 +1,6 @@
 # REST API Blueprint (Full Expansion)
 
-This blueprint maps all major modules to API-first contracts.
+This blueprint maps major modules to API-first contracts and is now parity-checked against runtime routes.
 
 ## Domains
 - Generation: text, voice, multilingual
@@ -17,4 +17,5 @@ This blueprint maps all major modules to API-first contracts.
 
 ## Source of truth
 - Machine-readable contract: `api/contracts/rest_api_blueprint.json`
-- Existing runtime endpoints: `api/rest_endpoints.py`
+- Runtime implementation: `api/rest_endpoints.py`
+- Contract parity test: `testing/unit_tests/test_contract_parity.py`
