@@ -130,6 +130,11 @@ def generate_text(req: TextRequest) -> dict:
     return process(req.model_dump())
 
 
+@app.post("/v1/generhate/text", include_in_schema=False)
+def generate_text_legacy_typo(req: TextRequest) -> dict:
+    """Backward-compatible typo route kept for external clients using legacy endpoint spelling."""
+    return process(req.model_dump())
+
 @app.post("/v1/generate/voice")
 def generate_voice(req: VoiceRequest) -> dict:
     run_phonetic_validation(req.phonetic_mode)

@@ -48,3 +48,5 @@ pytest
 - Full DB schema: `database/full_schema.sql`
 - REST API blueprint (OpenAPI-style JSON): `api/contracts/rest_api_blueprint.json`
 - Blueprint guide: `docs/rest_api_blueprint.md`
+
+Compatibility alias (legacy typo): `POST /v1/generhate/text` -> handled as `POST /v1/generate/text`.
