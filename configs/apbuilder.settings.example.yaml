@@ -1,0 +1,14 @@
+app:
+  name: apbuilder.app
+  domain: api.apbuilder.app
+platform:
+  default_mode: hybrid
+  supported_modes:
+    - developer
+    - nocode
+    - hybrid
+deployment:
+  supported_targets:
+    - cloud
+    - hybrid
+    - edge

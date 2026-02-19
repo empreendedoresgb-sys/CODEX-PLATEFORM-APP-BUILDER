@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
+from ai_assistant.platform_orchestrator import build_plan
 from core.engine_controller import process
 from monetization import get_tier
 from multilingual.translation_router import route_translation
@@ -11,7 +12,7 @@ from voice.presets import PresetStore, VoicePreset
 from voice.voice_cloning_4k import synthesize
 from validation.phonetic_validation import run_phonetic_validation
 
-app = FastAPI(title="KriolGB IA Voice API", version="v1")
+app = FastAPI(title="KriolGB IA Voice + APBUILDER.APP API", version="v1")
 preset_store = PresetStore()
 
 
@@ -53,6 +54,12 @@ class PresetRequest(BaseModel):
     emotional_mode: str | None = None
     character_mode: str | None = None
     tonal_variant: str | None = None
+
+
+class BuildPlanRequest(BaseModel):
+    prompt: str
+    mode: str = "hybrid"
+    deployment_target: str = "cloud"
 
 
 @app.get("/v1/voice/templates")
@@ -109,3 +116,11 @@ def validate(req: ValidateRequest) -> dict:
             "errors": [str(exc)],
             "suggested_correction": "Adjust output to Ntopy-4 canonical operators and lexicon.",
         }
+
+
+@app.post("/v1/platform/build-plan")
+def generate_build_plan(req: BuildPlanRequest) -> dict:
+    try:
+        return build_plan(req.prompt, req.mode, req.deployment_target)
+    except ValueError as exc:
+        return {"status": "failed", "error": str(exc)}
