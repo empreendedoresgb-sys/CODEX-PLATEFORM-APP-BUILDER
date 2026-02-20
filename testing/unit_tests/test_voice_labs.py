@@ -21,6 +21,7 @@ def test_get_tier_unknown_fails() -> None:
 
 def test_api_templates_endpoint_if_fastapi_available() -> None:
     fastapi = pytest.importorskip("fastapi")
+    pytest.importorskip("httpx")
     from fastapi.testclient import TestClient
     from api.rest_endpoints import app
 

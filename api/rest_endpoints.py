@@ -55,6 +55,8 @@ class PresetRequest(BaseModel):
     tonal_variant: str | None = None
 
 
+
+
 @app.get("/v1/voice/templates")
 def voice_templates() -> dict:
     return {"status": "ok", "templates": list_templates()}
@@ -109,3 +111,5 @@ def validate(req: ValidateRequest) -> dict:
             "errors": [str(exc)],
             "suggested_correction": "Adjust output to Ntopy-4 canonical operators and lexicon.",
         }
+
+
