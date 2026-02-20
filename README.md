@@ -1,22 +1,13 @@
-# KriolGB IA Voice + APBUILDER.APP (Monorepo)
+# KriolGB IA Voice
 
-This repository now hosts **two distinct products** with separate identities:
+Production-ready scaffold implementing the **Book of Charge** architecture with:
 
-1. **KriolGB IA Voice** (voice specialization)
-2. **APBUILDER.APP** (AI app/web builder specialization)
-
-## Product boundaries
-
-### 1) KriolGB IA Voice
-Voice-focused modules and APIs:
-- Linguistic enforcement, voice synthesis, presets, phonetic validation
-- Endpoints under `/v1/generate/*`, `/v1/voice/*`, `/v1/validate`
-
-### 2) APBUILDER.APP
-Builder-focused orchestration modules and APIs:
-- Platform mode engine (`developer`, `nocode`, `hybrid`)
-- Multi-agent build plan generation
-- Endpoint under `/v1/platform/build-plan`
+- Ntopy-4-aligned module boundaries
+- canonical lock hooks for `Tira Boka Na Binhu`
+- anti-drift and validation pipeline
+- voice-first API surfaces
+- memory-efficient retrieval-oriented design stubs
+- creative Voice Labs and preset functionality
 
 ## Run API
 
@@ -40,4 +31,3 @@ pytest
 - `POST /v1/voice/presets`
 - `GET /v1/voice/presets`
 - `GET /v1/monetization/tiers/{tier_name}`
-- `POST /v1/platform/build-plan`
