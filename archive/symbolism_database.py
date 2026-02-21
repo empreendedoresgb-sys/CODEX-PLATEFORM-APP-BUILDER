@@ -1,2 +1,0 @@
-class SymbolismDatabase:
-    pass

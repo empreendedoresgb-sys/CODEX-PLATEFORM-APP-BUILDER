@@ -5,19 +5,13 @@ from core.languages.registry import get_language, list_languages
 from multilingual.translation_router import route_translation
 
 
-def test_kriol_guinea_registered() -> None:
-    language = get_language("kriol-guinea")
-    assert language.display_name == "Kriol Guinea"
-    assert language.language_type == "National Linguistic System"
-
-
-def test_languages_contains_global_and_kriol_guinea() -> None:
+def test_global_languages_registered() -> None:
     ids = {item["id"] for item in list_languages()}
-    assert {"kriol-guinea", "en", "fr", "pt"}.issubset(ids)
+    assert {"en", "fr", "pt"}.issubset(ids)
 
 
 def test_process_respects_language_selection() -> None:
-    out = process({"input": "Kriol KA na tira boka na binhu"}, language_id="kriol-guinea")
+    out = process({"input": "hello world"}, language_id="en")
     assert out["status"] == "ok"
 
 
@@ -27,10 +21,20 @@ def test_process_rejects_unknown_language() -> None:
 
 
 def test_multilingual_router_uses_registry_ids() -> None:
-    out = route_translation("hello", "kriol-guinea", "fr")
-    assert out.startswith("[kriol-guinea->fr]")
+    out = route_translation("hello", "en", "fr")
+    assert out.startswith("[en->fr]")
 
 
 def test_multilingual_router_rejects_unknown_language() -> None:
     with pytest.raises(ValueError):
-        route_translation("hello", "kriol-guinea", "es")
+        route_translation("hello", "en", "es")
+
+
+def test_kriol_available_only_when_external_package_installed() -> None:
+    ids = {item["id"] for item in list_languages()}
+    if "kriol-guinea" in ids:
+        language = get_language("kriol-guinea")
+        assert language.display_name
+    else:
+        with pytest.raises(ValueError):
+            get_language("kriol-guinea")
