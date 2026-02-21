@@ -5,6 +5,6 @@ OPERATORS = {
 }
 
 
-def has_known_operator(text: str) -> bool:
+def validate_grammar(text: str) -> bool:
     tokens = {token.strip(".,!?;:").upper() for token in text.split()}
     return bool(tokens & OPERATORS)

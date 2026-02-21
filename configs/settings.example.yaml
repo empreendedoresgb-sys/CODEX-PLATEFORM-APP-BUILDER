@@ -1,5 +1,5 @@
 app:
-  name: kriolgb-ia-voice
+  name: apbuilder.app
   environment: development
 voice:
   latency_target_ms: 150

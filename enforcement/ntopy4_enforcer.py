@@ -1,6 +1,6 @@
-from linguistic.grammar_operator_validator import has_known_operator
+from core.languages.kriol_guinea.grammar import validate_grammar
 
 
 def enforce_ntopy4(text: str) -> None:
-    if not has_known_operator(text):
+    if not validate_grammar(text):
         raise ValueError("Ntopy-4 operator compliance failed")

@@ -1,4 +1,4 @@
-# KriolGB AI – Voice Labs & Creative Voice Engine Framework
+# APBUILDER.APP – Voice Labs & Creative Voice Engine Framework
 
 ## Product Modules
 
@@ -8,7 +8,7 @@
 ### Voice Labs Behavior Templates (`voice/labs/` + `voice/labs_js/`)
 - Emotional templates, character templates, cultural variants, and mode validation router.
 
-### Linguistic Enforcement Core (`linguistic/`)
+### Linguistic Enforcement Core (`core/languages/`)
 - Ntopy-4 operator checks, lexical validation, and canonical normalization.
 
 ### Drift & Integrity Guard (`enforcement/` + `integrity/`)

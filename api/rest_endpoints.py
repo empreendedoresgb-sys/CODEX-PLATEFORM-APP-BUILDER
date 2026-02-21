@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
 from core.engine_controller import process
+from core.languages.registry import list_languages
 from monetization import get_tier
 from multilingual.translation_router import route_translation
 from voice.editing.processing import apply_processing
@@ -11,12 +12,13 @@ from voice.presets import PresetStore, VoicePreset
 from voice.voice_cloning_4k import synthesize
 from validation.phonetic_validation import run_phonetic_validation
 
-app = FastAPI(title="KriolGB IA Voice API", version="v1")
+app = FastAPI(title="APBUILDER.APP API", version="v1")
 preset_store = PresetStore()
 
 
 class TextRequest(BaseModel):
     input: str
+    language_id: str = "kriol-guinea"
     mode: str = "kriol"
     ntopy4: bool = True
     validation: bool = True
@@ -25,6 +27,7 @@ class TextRequest(BaseModel):
 class VoiceRequest(BaseModel):
     text: str
     voice_id: str
+    language_id: str = "kriol-guinea"
     phonetic_mode: str = "african"
     preserve_identity: bool = True
     emotional_mode: str | None = None
@@ -37,12 +40,14 @@ class VoiceRequest(BaseModel):
 
 class MultilingualRequest(BaseModel):
     text: str
-    target_language: str
+    source_language_id: str = "kriol-guinea"
+    target_language_id: str = "en"
     maintain_voice_identity: bool = True
 
 
 class ValidateRequest(BaseModel):
     text: str
+    language_id: str = "kriol-guinea"
     check_ntopy4: bool = True
     check_lexical: bool = True
 
@@ -53,6 +58,11 @@ class PresetRequest(BaseModel):
     emotional_mode: str | None = None
     character_mode: str | None = None
     tonal_variant: str | None = None
+
+
+@app.get("/v1/languages")
+def languages() -> dict:
+    return {"status": "ok", "languages": list_languages()}
 
 
 @app.get("/v1/voice/templates")
@@ -79,12 +89,12 @@ def list_presets() -> dict:
 
 @app.post("/v1/generate/text")
 def generate_text(req: TextRequest) -> dict:
-    return process(req.model_dump())
+    return process(req.model_dump(), language_id=req.language_id)
 
 
 @app.post("/v1/generate/voice")
 def generate_voice(req: VoiceRequest) -> dict:
-    run_phonetic_validation(req.phonetic_mode)
+    run_phonetic_validation(req.phonetic_mode, language_id=req.language_id)
     validate_mode_selection(req.emotional_mode, req.character_mode, req.tonal_variant)
     processing = apply_processing(req.text, pitch=req.pitch, tempo=req.tempo, energy=req.energy)
     audio = synthesize(processing["text"], req.voice_id)
@@ -93,19 +103,19 @@ def generate_voice(req: VoiceRequest) -> dict:
 
 @app.post("/v1/generate/multilingual")
 def generate_multilingual(req: MultilingualRequest) -> dict:
-    translated = route_translation(req.text, req.target_language)
+    translated = route_translation(req.text, req.source_language_id, req.target_language_id)
     return {"status": "ok", "data": {"text": translated}}
 
 
 @app.post("/v1/validate")
 def validate(req: ValidateRequest) -> dict:
     try:
-        process({"input": req.text})
+        process({"input": req.text}, language_id=req.language_id)
         return {"status": "ok", "compliance": 1.0, "errors": []}
     except ValueError as exc:
         return {
             "status": "failed",
             "compliance": 0.0,
             "errors": [str(exc)],
-            "suggested_correction": "Adjust output to Ntopy-4 canonical operators and lexicon.",
+            "suggested_correction": "Adjust output to selected language operators and lexicon.",
         }

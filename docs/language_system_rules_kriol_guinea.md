@@ -1,4 +1,4 @@
-# KriolGB IA Voice — Consolidated Book of Charge
+# APBUILDER.APP — Linguistic System Rules (Kriol Guinea Module)
 
 ## Locked Foundations
 - Canonical base: **Tira Boka Na Binhu** (locked)

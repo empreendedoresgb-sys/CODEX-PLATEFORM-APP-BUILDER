@@ -21,6 +21,7 @@ def test_get_tier_unknown_fails() -> None:
 
 def test_api_templates_endpoint_if_fastapi_available() -> None:
     fastapi = pytest.importorskip("fastapi")
+    pytest.importorskip("httpx")
     from fastapi.testclient import TestClient
     from api.rest_endpoints import app
 
@@ -29,3 +30,18 @@ def test_api_templates_endpoint_if_fastapi_available() -> None:
     response = client.get("/v1/voice/templates")
     assert response.status_code == 200
     assert response.json()["status"] == "ok"
+
+
+def test_languages_endpoint_if_fastapi_available() -> None:
+    pytest.importorskip("fastapi")
+    pytest.importorskip("httpx")
+    from fastapi.testclient import TestClient
+    from api.rest_endpoints import app
+
+    client = TestClient(app)
+    response = client.get("/v1/languages")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["status"] == "ok"
+    ids = {item["id"] for item in payload["languages"]}
+    assert "kriol-guinea" in ids

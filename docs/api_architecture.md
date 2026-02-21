@@ -1,7 +1,7 @@
 # API Architecture Draft
 
 ## Base URL
-`https://api.kriolgb-ia.com/v1/`
+`https://api.apbuilder.app/v1/`
 
 ## Endpoints
 - `POST /generate/text`
