@@ -4,6 +4,8 @@ from pydantic import BaseModel
 from core.engine_controller import process
 from core.languages.registry import list_languages
 from multilingual.translation_router import route_translation
+from orchestrator import get_orchestrator_run, run_orchestrator
+from orchestrator.contracts import OrchestratorRunRequest
 
 app = FastAPI(title="APBUILDER.APP API", version="v1")
 
@@ -52,3 +54,18 @@ def validate(req: ValidateRequest) -> dict:
             "errors": [str(exc)],
             "suggested_correction": "Adjust output to selected language rules.",
         }
+
+
+@app.post("/v1/orchestrator/run")
+def orchestrator_run(req: OrchestratorRunRequest) -> dict:
+    result = run_orchestrator(req)
+    return {"status": "ok", "run": result.model_dump()}
+
+
+@app.get("/v1/orchestrator/runs/{run_id}")
+def orchestrator_get_run(run_id: str) -> dict:
+    try:
+        run = get_orchestrator_run(run_id)
+        return {"status": "ok", "run": run.model_dump()}
+    except ValueError as exc:
+        return {"status": "failed", "error": str(exc)}

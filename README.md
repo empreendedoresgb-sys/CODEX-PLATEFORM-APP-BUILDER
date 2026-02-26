@@ -26,3 +26,6 @@ pytest
 - `POST /v1/generate/text`
 - `POST /v1/generate/multilingual`
 - `POST /v1/validate`
+
+- `POST /v1/orchestrator/run`
+- `GET /v1/orchestrator/runs/{run_id}`
