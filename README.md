@@ -30,3 +30,18 @@ pytest
 - `POST /v1/orchestrator/run`
 - `GET /v1/orchestrator/runs/{run_id}`
 - `POST /v1/orchestrator/runs/{run_id}/deploy`
+
+## Preview smoke test
+
+Start API:
+
+```bash
+uvicorn api.rest_endpoints:app --host 0.0.0.0 --port 8000
+```
+
+In another terminal, run:
+
+```bash
+./scripts/preview_smoke_test.sh
+```
+
