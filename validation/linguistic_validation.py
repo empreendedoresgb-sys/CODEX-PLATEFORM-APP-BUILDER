@@ -1,6 +1,6 @@
-from linguistic.lexical_validator import validate_lexicon
+from core.languages.registry import get_runtime
 
 
-def run_linguistic_validation(text: str) -> None:
-    if not validate_lexicon(text):
-        raise ValueError("Lexical validation failed")
+def run_linguistic_validation(text: str, language_id: str = "en") -> None:
+    runtime = get_runtime(language_id)
+    runtime.validate_text(text)

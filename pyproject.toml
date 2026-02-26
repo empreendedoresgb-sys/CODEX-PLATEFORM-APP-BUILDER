@@ -3,30 +3,25 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "kriolgb-ia-voice"
+name = "apbuilder-app"
 version = "0.1.0"
-description = "KriolGB IA Voice - production architecture scaffold"
+description = "APBUILDER.APP - unified AI app and web builder platform"
 requires-python = ">=3.11"
 dependencies = [
   "fastapi>=0.115.0",
   "uvicorn>=0.30.0",
-  "pydantic>=2.8.0"
+  "pydantic>=2.8.0",
+  "kriol-guinea-language-core>=0.1.0"
 ]
-
-[tool.setuptools]
-py-modules = ["monetization"]
 
 [tool.setuptools.packages.find]
 include = [
   "ai_assistant*",
   "api*",
-  "archive*",
   "core*",
   "enforcement*",
-  "linguistic*",
   "multilingual*",
   "validation*",
-  "voice*"
 ]
 exclude = [
   "testing*",

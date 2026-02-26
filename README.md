@@ -1,13 +1,12 @@
-# KriolGB IA Voice
+# APBUILDER.APP
 
-Production-ready scaffold implementing the **Book of Charge** architecture with:
+APBUILDER.APP is a unified AI-first app and web builder platform.
 
-- Ntopy-4-aligned module boundaries
-- canonical lock hooks for `Tira Boka Na Binhu`
-- anti-drift and validation pipeline
-- voice-first API surfaces
-- memory-efficient retrieval-oriented design stubs
-- creative Voice Labs and preset functionality
+## Core architecture highlights
+- Builder API and orchestration core
+- Registry-driven language abstraction layer
+- External language-core dependency support (`kriol-guinea-language-core`)
+- Multi-layer validation and anti-drift pipeline
 
 ## Run API
 
@@ -23,11 +22,11 @@ pytest
 
 ## Key API endpoints
 
+- `GET /v1/languages`
 - `POST /v1/generate/text`
-- `POST /v1/generate/voice`
 - `POST /v1/generate/multilingual`
 - `POST /v1/validate`
-- `GET /v1/voice/templates`
-- `POST /v1/voice/presets`
-- `GET /v1/voice/presets`
-- `GET /v1/monetization/tiers/{tier_name}`
+
+- `POST /v1/orchestrator/run`
+- `GET /v1/orchestrator/runs/{run_id}`
+- `POST /v1/orchestrator/runs/{run_id}/deploy`
