@@ -1,0 +1,10 @@
+run = "uvicorn api.rest_endpoints:app --host 0.0.0.0 --port 3000"
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-lc", "uvicorn api.rest_endpoints:app --host 0.0.0.0 --port ${PORT:-3000}"]
+
+[env]
+PYTHONUNBUFFERED = "1"

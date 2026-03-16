@@ -51,3 +51,10 @@ pytest
 - Blueprint guide: `docs/rest_api_blueprint.md`
 
 Compatibility alias (legacy typo): `POST /v1/generhate/text` -> handled as `POST /v1/generate/text`.
+
+## Replit quick start
+
+1. Import this repository into Replit (GitHub import).
+2. Replit auto-uses `.replit` run command (`uvicorn api.rest_endpoints:app --host 0.0.0.0 --port 3000`).
+3. Open `/demo` for visual testing UI and `/docs` for Swagger.
+4. Deploy with the same command using `${PORT}` in Replit Deployments.

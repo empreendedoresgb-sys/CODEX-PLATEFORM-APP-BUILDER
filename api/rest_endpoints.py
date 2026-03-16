@@ -1,6 +1,8 @@
 from datetime import UTC, datetime
+from pathlib import Path
 
 from fastapi import FastAPI, Header, HTTPException
+from fastapi.responses import FileResponse, RedirectResponse
 from pydantic import BaseModel, Field
 
 from backend.services.billing_service import create_invoice, list_invoices, validate_webhook_signature
@@ -92,6 +94,20 @@ class InvoiceCreateRequest(BaseModel):
     amount_cents: int = Field(ge=1)
     currency: str = "USD"
 
+
+
+
+@app.get("/")
+def root() -> RedirectResponse:
+    return RedirectResponse(url="/demo")
+
+
+@app.get("/demo")
+def demo_page() -> FileResponse:
+    demo_path = Path("frontend/replit_demo/index.html")
+    if not demo_path.exists():
+        raise HTTPException(status_code=404, detail="Demo page not found")
+    return FileResponse(demo_path)
 
 @app.get("/v1/system/health")
 def system_health() -> dict:

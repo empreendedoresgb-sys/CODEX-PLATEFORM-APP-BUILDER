@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KriolGB IA Voice Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; background: #0d1117; color: #f0f6fc; }
+    .card { background: #161b22; padding: 1rem; border-radius: 8px; max-width: 720px; }
+    input, button, textarea { width: 100%; margin-top: .5rem; padding: .7rem; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: #f0f6fc; }
+    button { cursor: pointer; background: #238636; border: none; }
+    pre { white-space: pre-wrap; background: #010409; padding: 1rem; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>KriolGB IA Voice — Replit Visual Demo</h1>
+  <div class="card">
+    <label for="text">Input text (include Ntopy-4 operator, e.g. KA/NA)</label>
+    <textarea id="text" rows="3">Kriol KA na tira boka na binhu</textarea>
+    <button id="generateBtn">Generate Text</button>
+    <button id="healthBtn">Check Health</button>
+    <pre id="output">Ready.</pre>
+  </div>
+
+  <script>
+    const out = document.getElementById('output');
+
+    document.getElementById('generateBtn').onclick = async () => {
+      const input = document.getElementById('text').value;
+      const res = await fetch('/v1/generate/text', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ input, mode: 'kriol', ntopy4: true, validation: true })
+      });
+      out.textContent = JSON.stringify(await res.json(), null, 2);
+    };
+
+    document.getElementById('healthBtn').onclick = async () => {
+      const res = await fetch('/v1/system/health');
+      out.textContent = JSON.stringify(await res.json(), null, 2);
+    };
+  </script>
+</body>
+</html>
