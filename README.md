@@ -57,3 +57,16 @@ export default function App() {
 }
 ```
 
+## Codex workspace preview button (browser userscript)
+
+If you want a preview button in your workspace UI itself (outside repo app code), install this userscript in a browser extension like Tampermonkey:
+
+- `scripts/codex_workspace_preview_button.user.js`
+
+What it does:
+- tries to insert **Launch App Preview** into top header/toolbar areas
+- falls back to a floating top-right button if toolbar selectors are not found
+- stores your preview URL in localStorage and opens it in a new tab
+
+Default preview URL: `http://127.0.0.1:8000/docs`
+
