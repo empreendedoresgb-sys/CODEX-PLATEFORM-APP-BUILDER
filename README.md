@@ -45,3 +45,15 @@ In another terminal, run:
 ./scripts/preview_smoke_test.sh
 ```
 
+## Frontend preview button component
+
+Use `PreviewWorkbench` to add a top-menu "Launch Live App Preview" button with live iframe preview, interactive mode toggle, and desktop/tablet/mobile simulator.
+
+```tsx
+import { PreviewWorkbench } from './frontend/components/PreviewWorkbench';
+
+export default function App() {
+  return <PreviewWorkbench previewUrl="http://127.0.0.1:8000/docs" />;
+}
+```
+
