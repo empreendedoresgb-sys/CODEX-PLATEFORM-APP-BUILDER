@@ -1,15 +1,17 @@
-from orchestrator.contracts import KpiFocus, OrchestratorRunRequest, RunStage, TaskEnvelope
+from orchestrator.contracts import BuildType, KpiFocus, OrchestratorRunRequest, RunStage, TaskEnvelope
 from orchestrator.master import get_orchestrator_run, run_orchestrator
 
 
 def test_orchestrator_run_reaches_deploy_ready() -> None:
     result = run_orchestrator(
-        OrchestratorRunRequest(prompt="Build a CRM with dashboard", target="web", mode="prototype")
+        OrchestratorRunRequest(prompt="Build a CRM with dashboard", target="web", mode="prototype", build_type=BuildType.MOBILE_APP)
     )
     assert result.stage == RunStage.DEPLOY_READY
     assert result.preview_url is not None
-    assert len(result.artifacts) >= 4
+    assert len(result.artifacts) >= 5
     assert result.selected_plane.value == "BUILD"
+    assert result.build_type == BuildType.MOBILE_APP
+    assert any("mobile" in item.summary.lower() for item in result.artifacts)
 
 
 def test_orchestrator_run_fetch_by_id() -> None:

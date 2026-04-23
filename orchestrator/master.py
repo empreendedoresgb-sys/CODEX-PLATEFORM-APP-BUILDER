@@ -12,7 +12,7 @@ from orchestrator.state_machine import transition
 
 
 def run_orchestrator(req: OrchestratorRunRequest) -> OrchestratorRunResult:
-    run = create_run(req.prompt, req.target, req.mode, req.language_id)
+    run = create_run(req.prompt, req.target, req.mode, req.language_id, req.build_type)
     run.selected_plane = route_control_plane(req.kpi_focus)
     run.audit_trail.append(
         build_audit_event("control_plane_router", "route", f"Selected plane: {run.selected_plane}")
@@ -36,11 +36,11 @@ def run_orchestrator(req: OrchestratorRunRequest) -> OrchestratorRunResult:
     add_event(run.run_id, run.stage, "Intent parsed")
 
     run.stage = transition(run.stage, RunStage.PLANNED)
-    run.artifacts.append(architect.run(req.target, req.mode))
+    run.artifacts.append(architect.run(req.target, req.mode, req.build_type))
     add_event(run.run_id, run.stage, "Architecture planned")
 
     run.stage = transition(run.stage, RunStage.GENERATED)
-    run.artifacts.extend(generator.run())
+    run.artifacts.extend(generator.run(req.build_type))
     add_event(run.run_id, run.stage, "Artifacts generated")
 
     run.stage = transition(run.stage, RunStage.VERIFIED)

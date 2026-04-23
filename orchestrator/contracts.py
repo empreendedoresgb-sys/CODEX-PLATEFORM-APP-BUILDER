@@ -16,6 +16,16 @@ class RunStage(StrEnum):
     FAILED = "FAILED"
 
 
+class BuildType(StrEnum):
+    APP = "APP"
+    SOFTWARE = "SOFTWARE"
+    MOBILE_APP = "MOBILE_APP"
+    WEB_PAGE = "WEB_PAGE"
+    WEBSITE = "WEBSITE"
+    AGENT = "AGENT"
+    BOT = "BOT"
+
+
 class ControlPlane(StrEnum):
     BUILD = "BUILD"
     OPS = "OPS"
@@ -67,6 +77,7 @@ class OrchestratorRunRequest(BaseModel):
     target: str = "web"
     mode: str = "prototype"
     language_id: str = "en"
+    build_type: BuildType = BuildType.WEBSITE
     kpi_focus: KpiFocus = KpiFocus.PR_THROUGHPUT_MTTR
     task: TaskEnvelope | None = None
 
@@ -90,6 +101,7 @@ class OrchestratorRunResult(BaseModel):
     target: str
     mode: str
     language_id: str
+    build_type: BuildType = BuildType.WEBSITE
     selected_plane: ControlPlane = ControlPlane.BUILD
     artifacts: list[AgentArtifact] = Field(default_factory=list)
     preview_url: str | None = None

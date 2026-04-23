@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import uuid
 
-from orchestrator.contracts import OrchestratorRunResult, RunEvent, RunStage
+from orchestrator.contracts import BuildType, OrchestratorRunResult, RunEvent, RunStage
 
 _RUNS: dict[str, OrchestratorRunResult] = {}
 _EVENTS: dict[str, list[RunEvent]] = {}
 
 
-def create_run(prompt: str, target: str, mode: str, language_id: str) -> OrchestratorRunResult:
+def create_run(prompt: str, target: str, mode: str, language_id: str, build_type: BuildType) -> OrchestratorRunResult:
     run_id = f"run_{uuid.uuid4().hex[:12]}"
     result = OrchestratorRunResult(
         run_id=run_id,
@@ -17,6 +17,7 @@ def create_run(prompt: str, target: str, mode: str, language_id: str) -> Orchest
         target=target,
         mode=mode,
         language_id=language_id,
+        build_type=build_type,
     )
     _RUNS[run_id] = result
     _EVENTS[run_id] = [RunEvent(run_id=run_id, stage=RunStage.RECEIVED, message="Run created")]

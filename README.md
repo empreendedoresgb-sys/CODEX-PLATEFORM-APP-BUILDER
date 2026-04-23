@@ -93,3 +93,17 @@ APBUILDER now includes practical scaffolding for:
 - `plugin_signature`
 - `agent_id`
 
+### Builder mission specializations
+
+APBUILDER orchestration now supports build specialization types:
+
+- `APP`
+- `SOFTWARE`
+- `MOBILE_APP`
+- `WEB_PAGE`
+- `WEBSITE`
+- `AGENT`
+- `BOT`
+
+Use `build_type` in `POST /v1/orchestrator/run` to steer generated domain artifacts for your product mission.
+
