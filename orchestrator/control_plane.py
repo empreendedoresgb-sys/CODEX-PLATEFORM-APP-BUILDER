@@ -4,6 +4,7 @@ from orchestrator.contracts import (
     AuditEvent,
     ControlPlane,
     KpiFocus,
+    LiveMetricsSnapshot,
     PolicyDecision,
     RiskLevel,
     SandboxTier,
@@ -24,6 +25,17 @@ def route_control_plane(kpi_focus: KpiFocus) -> ControlPlane:
     if kpi_focus == KpiFocus.PR_THROUGHPUT_MTTR:
         return ControlPlane.BUILD
     return ControlPlane.OPS
+
+
+def route_control_plane_by_live_metrics(kpi_focus: KpiFocus, metrics: LiveMetricsSnapshot) -> ControlPlane:
+    if kpi_focus == KpiFocus.PR_THROUGHPUT_MTTR:
+        if metrics.pr_throughput < 5 or metrics.bug_mttr_hours > 24:
+            return ControlPlane.BUILD
+        return ControlPlane.OPS
+
+    if metrics.autonomous_ops_success_rate < 0.8:
+        return ControlPlane.OPS
+    return ControlPlane.BUILD
 
 
 def evaluate_policy(task: TaskEnvelope) -> PolicyDecision:

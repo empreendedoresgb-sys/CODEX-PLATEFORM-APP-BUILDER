@@ -11,6 +11,9 @@ def test_orchestrator_run_reaches_deploy_ready() -> None:
     assert len(result.artifacts) >= 5
     assert result.selected_plane.value == "BUILD"
     assert result.build_type == BuildType.MOBILE_APP
+    assert result.spec is not None
+    assert result.scorecard is not None
+    assert result.scorecard.pass_gate is True
     assert any("mobile" in item.summary.lower() for item in result.artifacts)
 
 
@@ -79,7 +82,7 @@ def test_orchestrator_endpoint_if_fastapi_available() -> None:
     assert deployed.json()["run"]["stage"] == RunStage.RELEASED
 
 
-def test_control_plane_and_policy_endpoints() -> None:
+def test_control_plane_policy_spec_and_live_route_endpoints() -> None:
     import pytest
 
     pytest.importorskip("httpx")
@@ -92,6 +95,20 @@ def test_control_plane_and_policy_endpoints() -> None:
     route = client.post("/v1/control-plane/route", json={"kpi_focus": "CROSS_SYSTEM_AUTONOMY"})
     assert route.status_code == 200
     assert route.json()["selected_plane"] == "OPS"
+
+    live_route = client.post(
+        "/v1/control-plane/route/live",
+        json={
+            "kpi_focus": "PR_THROUGHPUT_MTTR",
+            "metrics": {
+                "pr_throughput": 2.0,
+                "bug_mttr_hours": 36.0,
+                "autonomous_ops_success_rate": 0.6,
+            },
+        },
+    )
+    assert live_route.status_code == 200
+    assert live_route.json()["selected_plane"] == "BUILD"
 
     decision = client.post(
         "/v1/policy/evaluate",
@@ -107,6 +124,17 @@ def test_control_plane_and_policy_endpoints() -> None:
     )
     assert decision.status_code == 200
     assert decision.json()["decision"]["allowed"] is False
+
+    spec = client.post(
+        "/v1/spec-ir/build",
+        json={
+            "prompt": "Build mobile social app",
+            "build_type": "MOBILE_APP",
+            "target_runtime": "mobile",
+        },
+    )
+    assert spec.status_code == 200
+    assert spec.json()["spec"]["build_type"] == "MOBILE_APP"
 
 
 def test_orchestrator_deploy_not_ready() -> None:

@@ -30,6 +30,9 @@ pytest
 - `POST /v1/orchestrator/run`
 - `GET /v1/orchestrator/runs/{run_id}`
 - `POST /v1/orchestrator/runs/{run_id}/deploy`
+- `POST /v1/spec-ir/build`
+- `POST /v1/spec-ir/validate`
+- `POST /v1/control-plane/route/live`
 
 ## Preview smoke test
 
@@ -107,3 +110,7 @@ APBUILDER orchestration now supports build specialization types:
 
 Use `build_type` in `POST /v1/orchestrator/run` to steer generated domain artifacts for your product mission.
 
+
+## Gold implementation blueprint
+
+- `docs/architecture/apbuilder_gold_blueprint.md`

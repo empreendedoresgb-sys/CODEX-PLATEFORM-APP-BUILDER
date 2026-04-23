@@ -5,9 +5,10 @@ from core.engine_controller import process
 from core.languages.registry import list_languages
 from multilingual.translation_router import route_translation
 from orchestrator import get_orchestrator_run, run_orchestrator
-from orchestrator.contracts import KpiFocus, OrchestratorRunRequest, TaskEnvelope
-from orchestrator.control_plane import evaluate_policy, route_control_plane
+from orchestrator.contracts import BuildType, KpiFocus, LiveMetricsSnapshot, OrchestratorRunRequest, ProjectSpecIR, TaskEnvelope
+from orchestrator.control_plane import evaluate_policy, route_control_plane, route_control_plane_by_live_metrics
 from orchestrator.master import deploy_run
+from orchestrator.spec_ir import build_spec_ir
 
 app = FastAPI(title="APBUILDER.APP API", version="v1")
 
@@ -30,6 +31,17 @@ class ValidateRequest(BaseModel):
 
 class ControlPlaneRouteRequest(BaseModel):
     kpi_focus: KpiFocus
+
+
+class ControlPlaneLiveRouteRequest(BaseModel):
+    kpi_focus: KpiFocus
+    metrics: LiveMetricsSnapshot
+
+
+class ProjectSpecBuildRequest(BaseModel):
+    prompt: str
+    build_type: BuildType
+    target_runtime: str = "web"
 
 
 @app.get("/v1/languages")
@@ -62,10 +74,27 @@ def validate(req: ValidateRequest) -> dict:
         }
 
 
+@app.post("/v1/spec-ir/build")
+def spec_ir_build(req: ProjectSpecBuildRequest) -> dict:
+    spec = build_spec_ir(prompt=req.prompt, build_type=req.build_type, target_runtime=req.target_runtime)
+    return {"status": "ok", "spec": spec.model_dump()}
+
+
+@app.post("/v1/spec-ir/validate")
+def spec_ir_validate(req: ProjectSpecIR) -> dict:
+    return {"status": "ok", "valid": True, "spec": req.model_dump()}
+
+
 @app.post("/v1/control-plane/route")
 def control_plane_route(req: ControlPlaneRouteRequest) -> dict:
     selected = route_control_plane(req.kpi_focus)
     return {"status": "ok", "selected_plane": selected}
+
+
+@app.post("/v1/control-plane/route/live")
+def control_plane_route_live(req: ControlPlaneLiveRouteRequest) -> dict:
+    selected = route_control_plane_by_live_metrics(req.kpi_focus, req.metrics)
+    return {"status": "ok", "selected_plane": selected, "metrics": req.metrics.model_dump()}
 
 
 @app.post("/v1/policy/evaluate")

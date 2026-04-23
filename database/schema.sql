@@ -23,3 +23,35 @@ CREATE TABLE IF NOT EXISTS build_jobs (
     status TEXT NOT NULL CHECK (status IN ('queued', 'processing', 'done', 'failed')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS project_spec_ir (
+    spec_id UUID PRIMARY KEY,
+    project_id UUID NOT NULL REFERENCES builder_projects(project_id),
+    build_type TEXT NOT NULL,
+    target_runtime TEXT NOT NULL,
+    frontend_stack TEXT NOT NULL,
+    backend_stack TEXT NOT NULL,
+    infra_profile TEXT NOT NULL,
+    quality_gates JSONB NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS run_scorecards (
+    scorecard_id UUID PRIMARY KEY,
+    job_id UUID NOT NULL REFERENCES build_jobs(job_id),
+    quality_score NUMERIC(4,3) NOT NULL,
+    security_score NUMERIC(4,3) NOT NULL,
+    kpi_score NUMERIC(4,3) NOT NULL,
+    pass_gate BOOLEAN NOT NULL,
+    reasons JSONB NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS live_kpi_metrics (
+    metric_id UUID PRIMARY KEY,
+    project_id UUID NOT NULL REFERENCES builder_projects(project_id),
+    pr_throughput NUMERIC(10,2) NOT NULL DEFAULT 0,
+    bug_mttr_hours NUMERIC(10,2) NOT NULL DEFAULT 0,
+    autonomous_ops_success_rate NUMERIC(5,4) NOT NULL DEFAULT 0,
+    captured_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

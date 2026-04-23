@@ -50,6 +50,16 @@ class SandboxTier(StrEnum):
     FULLY_ISOLATED = "FULLY_ISOLATED"
 
 
+class ProjectSpecIR(BaseModel):
+    project_name: str = Field(min_length=2)
+    build_type: BuildType
+    target_runtime: str = "web"
+    frontend_stack: str = "react"
+    backend_stack: str = "python-fastapi"
+    infra_profile: str = "cloud"
+    quality_gates: list[str] = Field(default_factory=lambda: ["tests", "security", "kpi"])
+
+
 class TaskEnvelope(BaseModel):
     intent: str = Field(min_length=3)
     risk_level: RiskLevel = RiskLevel.MEDIUM
@@ -72,6 +82,20 @@ class AuditEvent(BaseModel):
     details: str
 
 
+class LiveMetricsSnapshot(BaseModel):
+    pr_throughput: float = 0.0
+    bug_mttr_hours: float = 0.0
+    autonomous_ops_success_rate: float = 0.0
+
+
+class RunScorecard(BaseModel):
+    quality_score: float
+    security_score: float
+    kpi_score: float
+    pass_gate: bool
+    reasons: list[str] = Field(default_factory=list)
+
+
 class OrchestratorRunRequest(BaseModel):
     prompt: str = Field(min_length=3)
     target: str = "web"
@@ -80,6 +104,7 @@ class OrchestratorRunRequest(BaseModel):
     build_type: BuildType = BuildType.WEBSITE
     kpi_focus: KpiFocus = KpiFocus.PR_THROUGHPUT_MTTR
     task: TaskEnvelope | None = None
+    spec: ProjectSpecIR | None = None
 
 
 class AgentArtifact(BaseModel):
@@ -111,3 +136,5 @@ class OrchestratorRunResult(BaseModel):
     blocking_issues: list[str] = Field(default_factory=list)
     policy_decision: PolicyDecision | None = None
     audit_trail: list[AuditEvent] = Field(default_factory=list)
+    spec: ProjectSpecIR | None = None
+    scorecard: RunScorecard | None = None

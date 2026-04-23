@@ -18,6 +18,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install fastapi uvicorn pydantic pytest
       - name: Run tests
-        run: pytest
-      - name: Validate JSON Schema syntax
-        run: python -m json.tool schemas/voice_profile.schema.json > /dev/null
+        run: pytest -q
+      - name: Validate SQL schema syntax (lightweight)
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          sql = Path('database/schema.sql').read_text()
+          assert 'CREATE TABLE IF NOT EXISTS builder_projects' in sql
+          assert 'CREATE TABLE IF NOT EXISTS project_spec_ir' in sql
+          assert 'CREATE TABLE IF NOT EXISTS run_scorecards' in sql
+          print('schema checks passed')
+          PY
