@@ -1,13 +1,35 @@
 from __future__ import annotations
 
 from orchestrator.agents import architect, generator, intent_parser, validator
-from orchestrator.contracts import OrchestratorRunRequest, OrchestratorRunResult, RunStage
+from orchestrator.contracts import (
+    OrchestratorRunRequest,
+    OrchestratorRunResult,
+    RunStage,
+)
+from orchestrator.control_plane import build_audit_event, evaluate_policy, route_control_plane
 from orchestrator.repository import add_event, create_run, get_run, save_run
 from orchestrator.state_machine import transition
 
 
 def run_orchestrator(req: OrchestratorRunRequest) -> OrchestratorRunResult:
     run = create_run(req.prompt, req.target, req.mode, req.language_id)
+    run.selected_plane = route_control_plane(req.kpi_focus)
+    run.audit_trail.append(
+        build_audit_event("control_plane_router", "route", f"Selected plane: {run.selected_plane}")
+    )
+
+    if req.task:
+        decision = evaluate_policy(req.task)
+        run.policy_decision = decision
+        run.audit_trail.append(
+            build_audit_event(req.task.agent_id, "policy_evaluation", f"allowed={decision.allowed} tier={decision.sandbox_tier}")
+        )
+        if not decision.allowed:
+            run.stage = RunStage.FAILED
+            run.blocking_issues.extend(decision.reasons)
+            add_event(run.run_id, run.stage, "Policy gate blocked task")
+            save_run(run)
+            return run
 
     run.stage = transition(run.stage, RunStage.PARSED)
     run.artifacts.append(intent_parser.run(req.prompt))
@@ -22,7 +44,7 @@ def run_orchestrator(req: OrchestratorRunRequest) -> OrchestratorRunResult:
     add_event(run.run_id, run.stage, "Artifacts generated")
 
     run.stage = transition(run.stage, RunStage.VERIFIED)
-    run.blocking_issues = validator.run(req.prompt)
+    run.blocking_issues.extend(validator.run(req.prompt))
     if run.blocking_issues:
         run.stage = RunStage.FAILED
         run.quality_score = 0.0

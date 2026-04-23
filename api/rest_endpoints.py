@@ -5,7 +5,8 @@ from core.engine_controller import process
 from core.languages.registry import list_languages
 from multilingual.translation_router import route_translation
 from orchestrator import get_orchestrator_run, run_orchestrator
-from orchestrator.contracts import OrchestratorRunRequest
+from orchestrator.contracts import KpiFocus, OrchestratorRunRequest, TaskEnvelope
+from orchestrator.control_plane import evaluate_policy, route_control_plane
 from orchestrator.master import deploy_run
 
 app = FastAPI(title="APBUILDER.APP API", version="v1")
@@ -25,6 +26,10 @@ class MultilingualRequest(BaseModel):
 class ValidateRequest(BaseModel):
     text: str
     language_id: str = "en"
+
+
+class ControlPlaneRouteRequest(BaseModel):
+    kpi_focus: KpiFocus
 
 
 @app.get("/v1/languages")
@@ -55,6 +60,18 @@ def validate(req: ValidateRequest) -> dict:
             "errors": [str(exc)],
             "suggested_correction": "Adjust output to selected language rules.",
         }
+
+
+@app.post("/v1/control-plane/route")
+def control_plane_route(req: ControlPlaneRouteRequest) -> dict:
+    selected = route_control_plane(req.kpi_focus)
+    return {"status": "ok", "selected_plane": selected}
+
+
+@app.post("/v1/policy/evaluate")
+def policy_evaluate(req: TaskEnvelope) -> dict:
+    decision = evaluate_policy(req)
+    return {"status": "ok", "decision": decision.model_dump()}
 
 
 @app.post("/v1/orchestrator/run")

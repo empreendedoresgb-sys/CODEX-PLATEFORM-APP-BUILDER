@@ -16,11 +16,59 @@ class RunStage(StrEnum):
     FAILED = "FAILED"
 
 
+class ControlPlane(StrEnum):
+    BUILD = "BUILD"
+    OPS = "OPS"
+    POLICY = "POLICY"
+
+
+class KpiFocus(StrEnum):
+    PR_THROUGHPUT_MTTR = "PR_THROUGHPUT_MTTR"
+    CROSS_SYSTEM_AUTONOMY = "CROSS_SYSTEM_AUTONOMY"
+
+
+class RiskLevel(StrEnum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+    CRITICAL = "CRITICAL"
+
+
+class SandboxTier(StrEnum):
+    READ_ONLY = "READ_ONLY"
+    RESTRICTED_EXEC = "RESTRICTED_EXEC"
+    FULLY_ISOLATED = "FULLY_ISOLATED"
+
+
+class TaskEnvelope(BaseModel):
+    intent: str = Field(min_length=3)
+    risk_level: RiskLevel = RiskLevel.MEDIUM
+    required_permissions: list[str] = Field(default_factory=list)
+    rollback_plan: str = Field(min_length=3)
+    tool_class: str = "repo"
+    plugin_signature: str | None = None
+    agent_id: str = "release_agent"
+
+
+class PolicyDecision(BaseModel):
+    allowed: bool
+    sandbox_tier: SandboxTier
+    reasons: list[str] = Field(default_factory=list)
+
+
+class AuditEvent(BaseModel):
+    actor: str
+    action: str
+    details: str
+
+
 class OrchestratorRunRequest(BaseModel):
     prompt: str = Field(min_length=3)
     target: str = "web"
     mode: str = "prototype"
     language_id: str = "en"
+    kpi_focus: KpiFocus = KpiFocus.PR_THROUGHPUT_MTTR
+    task: TaskEnvelope | None = None
 
 
 class AgentArtifact(BaseModel):
@@ -42,9 +90,12 @@ class OrchestratorRunResult(BaseModel):
     target: str
     mode: str
     language_id: str
+    selected_plane: ControlPlane = ControlPlane.BUILD
     artifacts: list[AgentArtifact] = Field(default_factory=list)
     preview_url: str | None = None
     deploy_url: str | None = None
     deploy_approved: bool = False
     quality_score: float = 0.0
     blocking_issues: list[str] = Field(default_factory=list)
+    policy_decision: PolicyDecision | None = None
+    audit_trail: list[AuditEvent] = Field(default_factory=list)

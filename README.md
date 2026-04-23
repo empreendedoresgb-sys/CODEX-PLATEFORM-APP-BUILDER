@@ -70,3 +70,26 @@ What it does:
 
 Default preview URL: `http://127.0.0.1:8000/docs`
 
+## Dual control-plane architecture (APBUILDER 2035)
+
+APBUILDER now includes practical scaffolding for:
+
+- **Build plane** (PR throughput / MTTR optimization)
+- **Ops plane** (cross-system autonomous operations)
+- **Policy plane** (sandbox tiering, signed plugins, least-privilege scopes, audit trail)
+
+### New API endpoints
+
+- `POST /v1/control-plane/route`
+- `POST /v1/policy/evaluate`
+
+### Inter-agent task envelope fields
+
+- `intent`
+- `risk_level`
+- `required_permissions`
+- `rollback_plan`
+- `tool_class`
+- `plugin_signature`
+- `agent_id`
+
