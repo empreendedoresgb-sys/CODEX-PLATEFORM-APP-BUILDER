@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+from api.websocket_handler import router as ws_router
 from core.engine_controller import process
 from core.languages.registry import list_languages
 from multilingual.translation_router import route_translation
@@ -8,9 +9,11 @@ from orchestrator import get_orchestrator_run, run_orchestrator
 from orchestrator.contracts import BuildType, KpiFocus, LiveMetricsSnapshot, OrchestratorRunRequest, ProjectSpecIR, TaskEnvelope
 from orchestrator.control_plane import evaluate_policy, route_control_plane, route_control_plane_by_live_metrics
 from orchestrator.master import deploy_run
+from orchestrator.repository import get_events
 from orchestrator.spec_ir import build_spec_ir
 
 app = FastAPI(title="APBUILDER.APP API", version="v1")
+app.include_router(ws_router)
 
 
 class TextRequest(BaseModel):
@@ -42,6 +45,11 @@ class ProjectSpecBuildRequest(BaseModel):
     prompt: str
     build_type: BuildType
     target_runtime: str = "web"
+
+
+@app.get("/v1/health")
+def health() -> dict:
+    return {"status": "ok", "service": "apbuilder.api", "version": "v1"}
 
 
 @app.get("/v1/languages")
@@ -114,6 +122,15 @@ def orchestrator_get_run(run_id: str) -> dict:
     try:
         run = get_orchestrator_run(run_id)
         return {"status": "ok", "run": run.model_dump()}
+    except ValueError as exc:
+        return {"status": "failed", "error": str(exc)}
+
+
+@app.get("/v1/orchestrator/runs/{run_id}/events")
+def orchestrator_get_events(run_id: str) -> dict:
+    try:
+        events = get_events(run_id)
+        return {"status": "ok", "events": [event.model_dump() for event in events]}
     except ValueError as exc:
         return {"status": "failed", "error": str(exc)}
 

@@ -137,6 +137,54 @@ def test_control_plane_policy_spec_and_live_route_endpoints() -> None:
     assert spec.json()["spec"]["build_type"] == "MOBILE_APP"
 
 
+
+
+def test_health_and_events_endpoint() -> None:
+    import pytest
+
+    pytest.importorskip("httpx")
+    from fastapi.testclient import TestClient
+
+    from api.rest_endpoints import app
+
+    client = TestClient(app)
+    health = client.get("/v1/health")
+    assert health.status_code == 200
+    assert health.json()["status"] == "ok"
+
+    run = client.post(
+        "/v1/orchestrator/run",
+        json={"prompt": "Build support portal website", "target": "web", "mode": "prototype", "language_id": "en"},
+    )
+    run_id = run.json()["run"]["run_id"]
+
+    events = client.get(f"/v1/orchestrator/runs/{run_id}/events")
+    assert events.status_code == 200
+    assert events.json()["status"] == "ok"
+    assert len(events.json()["events"]) >= 1
+
+
+def test_websocket_events_channel() -> None:
+    import pytest
+
+    pytest.importorskip("httpx")
+    from fastapi.testclient import TestClient
+
+    from api.rest_endpoints import app
+
+    client = TestClient(app)
+    run = client.post(
+        "/v1/orchestrator/run",
+        json={"prompt": "Build customer dashboard", "target": "web", "mode": "prototype", "language_id": "en"},
+    )
+    run_id = run.json()["run"]["run_id"]
+
+    with client.websocket_connect(f"/v1/ws/events?run_id={run_id}") as ws:
+        payload = ws.receive_json()
+    assert payload["status"] == "ok"
+    assert payload["run_id"] == run_id
+    assert len(payload["events"]) >= 1
+
 def test_orchestrator_deploy_not_ready() -> None:
     import pytest
 

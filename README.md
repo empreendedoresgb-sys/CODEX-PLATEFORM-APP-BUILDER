@@ -22,6 +22,9 @@ pytest
 
 ## Key API endpoints
 
+- `WS /v1/ws/events?run_id={run_id}`
+- `GET /v1/orchestrator/runs/{run_id}/events`
+- `GET /v1/health`
 - `GET /v1/languages`
 - `POST /v1/generate/text`
 - `POST /v1/generate/multilingual`
