@@ -185,6 +185,21 @@ def test_websocket_events_channel() -> None:
     assert payload["run_id"] == run_id
     assert len(payload["events"]) >= 1
 
+
+
+def test_preview_button_endpoint() -> None:
+    import pytest
+
+    pytest.importorskip("httpx")
+    from fastapi.testclient import TestClient
+
+    from api.rest_endpoints import app
+
+    client = TestClient(app)
+    response = client.get("/v1/preview/button")
+    assert response.status_code == 200
+    assert "Launch App Preview" in response.text
+
 def test_orchestrator_deploy_not_ready() -> None:
     import pytest
 

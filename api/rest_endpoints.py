@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
 from api.websocket_handler import router as ws_router
@@ -51,6 +52,22 @@ class ProjectSpecBuildRequest(BaseModel):
 def health() -> dict:
     return {"status": "ok", "service": "apbuilder.api", "version": "v1"}
 
+
+
+
+@app.get("/v1/preview/button", response_class=HTMLResponse)
+def preview_button() -> str:
+    return """
+    <html>
+      <head><title>APBUILDER Preview</title></head>
+      <body style="font-family:Arial;padding:24px">
+        <h2>APBUILDER.APP Preview Button</h2>
+        <a href="/docs" style="background:#2563eb;color:#fff;padding:10px 14px;border-radius:8px;text-decoration:none">
+          Launch App Preview
+        </a>
+      </body>
+    </html>
+    """
 
 @app.get("/v1/languages")
 def languages() -> dict:

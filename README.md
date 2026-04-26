@@ -25,6 +25,7 @@ pytest
 - `WS /v1/ws/events?run_id={run_id}`
 - `GET /v1/orchestrator/runs/{run_id}/events`
 - `GET /v1/health`
+- `GET /v1/preview/button`
 - `GET /v1/languages`
 - `POST /v1/generate/text`
 - `POST /v1/generate/multilingual`
@@ -117,3 +118,8 @@ Use `build_type` in `POST /v1/orchestrator/run` to steer generated domain artifa
 ## Gold implementation blueprint
 
 - `docs/architecture/apbuilder_gold_blueprint.md`
+
+
+## Preview button quick link
+
+Open: `http://127.0.0.1:8000/v1/preview/button` to click **Launch App Preview** and jump to `/docs`.
