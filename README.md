@@ -48,6 +48,7 @@ pytest
 - `POST /v1/capabilities/design-system`
 - `POST /v1/capabilities/agent-blueprint`
 - `POST /v1/capabilities/job-template`
+- `POST /v1/capabilities/interaction-suite`
 
 ## Preview smoke test
 
@@ -151,6 +152,7 @@ APBUILDER now includes API scaffolding for the functionality extracted from the 
 - Claude-style design system blueprints with tokens, components, accessibility gates, and implementation notes
 - automatic agent blueprint generation for app, software, site, bot, and ops specialists
 - reusable job templates that turn prompts into scheduled, auditable, policy-checked work
+- interaction-suite blueprints covering chat, speech, artifacts, extended reasoning, deep-model routing, speed optimization, connectors, scheduled tasks, projects, cowork, plugins, shipping, skills, Excel-style models, research, web search, slides, mockups, remote dispatch, computer use, and browser helpers
 
 
 ## Design systems, automatic agents, and job templates
@@ -162,3 +164,10 @@ APBUILDER extends the Codex-style capability layer with builder-native product a
 - **Job templates** package recurring app-building work into triggers, runbooks, expected outputs, approvals, scorecards, and event trails.
 
 These capabilities are intentionally declarative first: they create safe blueprints that the policy plane can approve, sign, audit, and later bind to real connector credentials.
+
+
+## Claude-style interaction suite coverage
+
+`POST /v1/capabilities/interaction-suite` creates a practical APBUILDER capability map for the 20 modern AI-app workflows: ask/chat, mic/speech, artifact rendering, extended reasoning, deep-model routing, speed optimization, universal connectors, scheduled tasks, project persistence, cowork agents, plugins, release shipping, skills, spreadsheet models, research, web search, slides, design mockups, remote dispatch, computer-use planning, and browser helpers.
+
+The endpoint does not claim unsafe speed or model superiority; it turns those product ambitions into implementation modules, rollout phases, quality gates, and policy guardrails that can be incrementally connected to real providers.

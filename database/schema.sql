@@ -108,3 +108,15 @@ CREATE TABLE IF NOT EXISTS job_templates (
     approval_required BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+
+CREATE TABLE IF NOT EXISTS interaction_suite_blueprints (
+    suite_id UUID PRIMARY KEY,
+    project_id UUID REFERENCES builder_projects(project_id),
+    product_goal TEXT NOT NULL,
+    autonomy_level TEXT NOT NULL,
+    modules JSONB NOT NULL,
+    rollout_phases JSONB NOT NULL,
+    quality_gates JSONB NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

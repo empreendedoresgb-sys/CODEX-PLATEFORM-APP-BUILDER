@@ -157,3 +157,31 @@ def test_design_system_agent_blueprint_and_job_template_capabilities() -> None:
     template = job.json()["job_template"]
     assert template["approval_required"] is True
     assert "load project context and Project Spec IR" in template["runbook"]
+
+
+def test_interaction_suite_maps_claude_style_capabilities() -> None:
+    client = _client()
+
+    response = client.post(
+        "/v1/capabilities/interaction-suite",
+        json={
+            "product_goal": "Build the most advanced AI app builder",
+            "autonomy_level": "supervised",
+            "target_channels": ["web", "mobile", "desktop"],
+            "include_remote_dispatch": True,
+        },
+    )
+    assert response.status_code == 200
+    suite = response.json()["interaction_suite"]
+    module_names = {module["name"] for module in suite["modules"]}
+    capability_types = {module["capability_type"] for module in suite["modules"]}
+
+    assert "Ask / Chat" in module_names
+    assert "Mic / Speech" in module_names
+    assert "Click / Computer Use" in module_names
+    assert "Browse / Browser Extension" in module_names
+    assert "REMOTE_DISPATCH" in capability_types
+    assert "DEEP_MODEL" in capability_types
+    assert "SPEED_OPTIMIZATION" in capability_types
+    assert "policy approval before side effects" in suite["quality_gates"]
+    assert len(suite["modules"]) >= 20

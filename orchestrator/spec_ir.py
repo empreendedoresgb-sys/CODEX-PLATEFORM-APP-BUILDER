@@ -9,6 +9,8 @@ _BUILD_CAPABILITIES: dict[BuildType, list[CapabilityType]] = {
         CapabilityType.AUTOMATION,
         CapabilityType.BROWSER_TASK,
         CapabilityType.JOB_TEMPLATE,
+        CapabilityType.CHAT,
+        CapabilityType.ARTIFACT,
     ],
     BuildType.SOFTWARE: [
         CapabilityType.DOCUMENT,
@@ -16,20 +18,29 @@ _BUILD_CAPABILITIES: dict[BuildType, list[CapabilityType]] = {
         CapabilityType.PLUGIN_CHAIN,
         CapabilityType.AGENT_BLUEPRINT,
         CapabilityType.JOB_TEMPLATE,
+        CapabilityType.MODEL_ROUTING,
     ],
     BuildType.MOBILE_APP: [
         CapabilityType.MOBILE_REQUEST,
         CapabilityType.DESIGN_SYSTEM,
         CapabilityType.AUTOMATION,
         CapabilityType.IMAGE,
+        CapabilityType.SPEECH,
     ],
-    BuildType.WEB_PAGE: [CapabilityType.WEB_AUDIT, CapabilityType.DESIGN_SYSTEM, CapabilityType.IMAGE],
+    BuildType.WEB_PAGE: [
+        CapabilityType.WEB_AUDIT,
+        CapabilityType.DESIGN_SYSTEM,
+        CapabilityType.IMAGE,
+        CapabilityType.MOCKUP,
+    ],
     BuildType.WEBSITE: [
         CapabilityType.WEB_AUDIT,
         CapabilityType.DESIGN_SYSTEM,
         CapabilityType.DOCUMENT,
         CapabilityType.AUTOMATION,
         CapabilityType.JOB_TEMPLATE,
+        CapabilityType.WEB_SEARCH,
+        CapabilityType.SLIDES,
     ],
     BuildType.AGENT: [
         CapabilityType.SKILL,
@@ -37,6 +48,9 @@ _BUILD_CAPABILITIES: dict[BuildType, list[CapabilityType]] = {
         CapabilityType.PLUGIN_CHAIN,
         CapabilityType.AGENT_BLUEPRINT,
         CapabilityType.JOB_TEMPLATE,
+        CapabilityType.EXTENDED_THINKING,
+        CapabilityType.RESEARCH,
+        CapabilityType.REMOTE_DISPATCH,
     ],
     BuildType.BOT: [
         CapabilityType.MCP_CONNECTOR,
@@ -44,6 +58,8 @@ _BUILD_CAPABILITIES: dict[BuildType, list[CapabilityType]] = {
         CapabilityType.BROWSER_TASK,
         CapabilityType.AGENT_BLUEPRINT,
         CapabilityType.JOB_TEMPLATE,
+        CapabilityType.COMPUTER_USE,
+        CapabilityType.BROWSER_EXTENSION,
     ],
 }
 

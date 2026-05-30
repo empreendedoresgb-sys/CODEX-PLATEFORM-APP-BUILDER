@@ -49,10 +49,15 @@ This document maps the transcript-proposed workflows into APBUILDER product capa
     - Package recurring build/ops work into triggers, runbooks, expected outputs, approvals, scorecards, and event trails.
     - API: `POST /v1/capabilities/job-template`.
 
+
+12. **Claude-style interaction suite**
+    - Capture the full modern AI workspace set: chat, speech, artifacts, extended reasoning, deep-model routing, speed optimization, connectors, tasks, projects, cowork, plugins, shipping, skills, spreadsheet models, research, web search, slides, mockups, remote dispatch, computer use, and browser helpers.
+    - API: `POST /v1/capabilities/interaction-suite`.
+
 ## Safety principles
 
 - Browser and automation flows default to human approval.
 - Connectors require least-privilege scopes.
 - Plugins and skills remain declarative until signed/approved by policy plane.
 - Generated media plans include brand and safety quality checks.
-- Design, agent, and job-template capabilities stay declarative until policy approval binds them to live credentials or side effects.
+- Design, agent, job-template, and interaction-suite capabilities stay declarative until policy approval binds them to live credentials or side effects.

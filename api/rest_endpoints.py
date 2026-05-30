@@ -10,6 +10,7 @@ from orchestrator import get_orchestrator_run, run_orchestrator
 from orchestrator.capabilities import (
     build_agent_blueprint,
     build_design_system,
+    build_interaction_suite,
     build_job_template,
     build_plugin_chain,
     build_workspace_document,
@@ -26,6 +27,7 @@ from orchestrator.contracts import (
     BrowserTaskPlan,
     BuildType,
     DesignSystemRequest,
+    InteractionSuiteRequest,
     JobTemplateRequest,
     KpiFocus,
     LiveMetricsSnapshot,
@@ -218,6 +220,12 @@ def capability_agent_blueprint(req: AgentBlueprintRequest) -> dict:
 def capability_job_template(req: JobTemplateRequest) -> dict:
     result = build_job_template(req)
     return {"status": "ok", "job_template": result.model_dump()}
+
+
+@app.post("/v1/capabilities/interaction-suite")
+def capability_interaction_suite(req: InteractionSuiteRequest) -> dict:
+    result = build_interaction_suite(req)
+    return {"status": "ok", "interaction_suite": result.model_dump()}
 
 
 @app.post("/v1/orchestrator/run")

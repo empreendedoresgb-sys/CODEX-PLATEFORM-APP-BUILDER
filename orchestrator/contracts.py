@@ -65,6 +65,23 @@ class CapabilityType(StrEnum):
     DESIGN_SYSTEM = "DESIGN_SYSTEM"
     AGENT_BLUEPRINT = "AGENT_BLUEPRINT"
     JOB_TEMPLATE = "JOB_TEMPLATE"
+    CHAT = "CHAT"
+    SPEECH = "SPEECH"
+    ARTIFACT = "ARTIFACT"
+    EXTENDED_THINKING = "EXTENDED_THINKING"
+    MODEL_ROUTING = "MODEL_ROUTING"
+    PROJECT_MEMORY = "PROJECT_MEMORY"
+    COWORK = "COWORK"
+    RESEARCH = "RESEARCH"
+    WEB_SEARCH = "WEB_SEARCH"
+    SLIDES = "SLIDES"
+    MOCKUP = "MOCKUP"
+    REMOTE_DISPATCH = "REMOTE_DISPATCH"
+    COMPUTER_USE = "COMPUTER_USE"
+    BROWSER_EXTENSION = "BROWSER_EXTENSION"
+    EXCEL_MODEL = "EXCEL_MODEL"
+    DEEP_MODEL = "DEEP_MODEL"
+    SPEED_OPTIMIZATION = "SPEED_OPTIMIZATION"
 
 
 class ProjectSpecIR(BaseModel):
@@ -283,3 +300,27 @@ class JobTemplate(BaseModel):
     expected_output: str
     runbook: list[str]
     approval_required: bool
+
+
+class InteractionSuiteRequest(BaseModel):
+    product_goal: str = Field(min_length=3)
+    autonomy_level: str = "supervised"
+    target_channels: list[str] = Field(default_factory=lambda: ["web", "mobile", "desktop"])
+    include_remote_dispatch: bool = True
+
+
+class CapabilityModule(BaseModel):
+    name: str
+    capability_type: CapabilityType
+    status: str
+    api_surface: str
+    guardrails: list[str]
+    implementation_notes: list[str]
+
+
+class InteractionSuiteBlueprint(BaseModel):
+    product_goal: str
+    autonomy_level: str
+    modules: list[CapabilityModule]
+    rollout_phases: list[str]
+    quality_gates: list[str]
