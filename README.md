@@ -45,6 +45,9 @@ pytest
 - `POST /v1/capabilities/automations`
 - `POST /v1/capabilities/browser-task`
 - `POST /v1/capabilities/mobile-command`
+- `POST /v1/capabilities/design-system`
+- `POST /v1/capabilities/agent-blueprint`
+- `POST /v1/capabilities/job-template`
 
 ## Preview smoke test
 
@@ -145,3 +148,17 @@ APBUILDER now includes API scaffolding for the functionality extracted from the 
 - scheduled automation recipes with human approval defaults
 - browser task planning with validation-before-submit guardrails
 - mobile command queue planning for phone-to-workspace requests
+- Claude-style design system blueprints with tokens, components, accessibility gates, and implementation notes
+- automatic agent blueprint generation for app, software, site, bot, and ops specialists
+- reusable job templates that turn prompts into scheduled, auditable, policy-checked work
+
+
+## Design systems, automatic agents, and job templates
+
+APBUILDER extends the Codex-style capability layer with builder-native product automation:
+
+- **Design system blueprints** convert a brand direction into reusable tokens, component inventories, accessibility checks, and implementation notes for React/Next, mobile, and website builds.
+- **Agent blueprints** transform objectives and task lists into role definitions, connector/tool access, job templates, and guardrails for least-privilege autonomous work.
+- **Job templates** package recurring app-building work into triggers, runbooks, expected outputs, approvals, scorecards, and event trails.
+
+These capabilities are intentionally declarative first: they create safe blueprints that the policy plane can approve, sign, audit, and later bind to real connector credentials.

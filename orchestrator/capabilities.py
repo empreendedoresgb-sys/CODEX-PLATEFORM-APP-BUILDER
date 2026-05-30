@@ -1,15 +1,22 @@
 from __future__ import annotations
 
 from orchestrator.contracts import (
+    AgentBlueprint,
+    AgentBlueprintRequest,
     AutomationRecipe,
     BrowserTaskPlan,
     CapabilityType,
+    DesignSystemBlueprint,
+    DesignSystemRequest,
+    JobTemplate,
+    JobTemplateRequest,
     MCPConnectorDefinition,
     MediaGenerationPlan,
     MediaGenerationRequest,
     MobileCommandPlan,
     MobileCommandRequest,
     PluginChainDefinition,
+    RiskLevel,
     SkillDefinition,
     WorkspaceDocumentRequest,
     WorkspaceDocumentResult,
@@ -104,5 +111,77 @@ def queue_mobile_command(req: MobileCommandRequest) -> MobileCommandPlan:
             "sync command to active workspace",
             "resolve project context",
             "execute via orchestrator when workstation is available",
+        ],
+    )
+
+
+def build_design_system(req: DesignSystemRequest) -> DesignSystemBlueprint:
+    return DesignSystemBlueprint(
+        brand_name=req.brand_name,
+        tokens={
+            "color.primary": req.primary_color,
+            "color.secondary": req.secondary_color,
+            "radius.card": "16px",
+            "shadow.elevated": "0 18px 40px rgba(15, 23, 42, 0.14)",
+            "font.body": "Inter, system-ui, sans-serif",
+            "motion.default": "180ms ease-out",
+        },
+        components=[
+            "AppShell",
+            "TopNavigation",
+            "HeroSection",
+            "FeatureCard",
+            "PricingTier",
+            "AgentActivityPanel",
+            "PreviewWorkbench",
+        ],
+        accessibility_checks=[
+            "WCAG AA contrast on primary/secondary colors",
+            "keyboard focus states for all interactive components",
+            "responsive tablet/mobile layouts",
+            "reduced-motion fallback for animations",
+        ],
+        implementation_notes=[
+            f"Optimize visual language for {req.product_type} builds.",
+            f"Direction: {req.visual_direction}",
+            "Export tokens to CSS variables, Tailwind config, and design handoff JSON.",
+        ],
+    )
+
+
+def build_agent_blueprint(req: AgentBlueprintRequest) -> AgentBlueprint:
+    slug = req.objective.lower().replace(" ", "-")[:48].strip("-") or "agent"
+    tools = ["orchestrator.run", "policy.evaluate", "events.stream"]
+    tools.extend(req.preferred_connectors)
+    guardrails = [
+        "least-privilege scopes only",
+        "audit every action",
+        "rollback plan required before execution",
+    ]
+    if req.risk_level in {RiskLevel.HIGH, RiskLevel.CRITICAL}:
+        guardrails.append("human approval required before external side effects")
+    return AgentBlueprint(
+        name=f"{slug}-agent",
+        objective=req.objective,
+        role="autonomous builder specialist",
+        tools=tools,
+        job_templates=[f"job:{task.lower().replace(' ', '-')}" for task in req.tasks],
+        guardrails=guardrails,
+    )
+
+
+def build_job_template(req: JobTemplateRequest) -> JobTemplate:
+    return JobTemplate(
+        name=req.name,
+        trigger=req.trigger,
+        task=req.task,
+        expected_output=req.expected_output,
+        approval_required=req.approval_required,
+        runbook=[
+            "load project context and Project Spec IR",
+            "evaluate policy and required permissions",
+            f"execute task: {req.task}",
+            f"validate output: {req.expected_output}",
+            "record scorecard and event trail",
         ],
     )

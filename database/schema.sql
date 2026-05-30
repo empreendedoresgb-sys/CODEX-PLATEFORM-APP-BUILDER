@@ -75,3 +75,36 @@ CREATE TABLE IF NOT EXISTS automation_recipes (
     approval_required BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+
+CREATE TABLE IF NOT EXISTS design_system_blueprints (
+    blueprint_id UUID PRIMARY KEY,
+    project_id UUID REFERENCES builder_projects(project_id),
+    brand_name TEXT NOT NULL,
+    tokens JSONB NOT NULL,
+    components JSONB NOT NULL,
+    accessibility_checks JSONB NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS agent_blueprints (
+    agent_blueprint_id UUID PRIMARY KEY,
+    project_id UUID REFERENCES builder_projects(project_id),
+    name TEXT NOT NULL,
+    objective TEXT NOT NULL,
+    tools JSONB NOT NULL,
+    guardrails JSONB NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS job_templates (
+    template_id UUID PRIMARY KEY,
+    project_id UUID REFERENCES builder_projects(project_id),
+    name TEXT NOT NULL,
+    trigger TEXT NOT NULL,
+    task TEXT NOT NULL,
+    expected_output TEXT NOT NULL,
+    runbook JSONB NOT NULL,
+    approval_required BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

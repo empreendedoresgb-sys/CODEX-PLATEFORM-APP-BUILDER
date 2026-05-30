@@ -62,6 +62,9 @@ class CapabilityType(StrEnum):
     AUTOMATION = "AUTOMATION"
     BROWSER_TASK = "BROWSER_TASK"
     MOBILE_REQUEST = "MOBILE_REQUEST"
+    DESIGN_SYSTEM = "DESIGN_SYSTEM"
+    AGENT_BLUEPRINT = "AGENT_BLUEPRINT"
+    JOB_TEMPLATE = "JOB_TEMPLATE"
 
 
 class ProjectSpecIR(BaseModel):
@@ -231,3 +234,52 @@ class MobileCommandPlan(BaseModel):
     command: str
     project_id: str
     queued_actions: list[str]
+
+
+class DesignSystemRequest(BaseModel):
+    brand_name: str = Field(min_length=2)
+    product_type: BuildType = BuildType.WEBSITE
+    visual_direction: str = "modern, accessible, conversion-focused"
+    primary_color: str = "#2563eb"
+    secondary_color: str = "#0f172a"
+
+
+class DesignSystemBlueprint(BaseModel):
+    brand_name: str
+    tokens: dict[str, str]
+    components: list[str]
+    accessibility_checks: list[str]
+    implementation_notes: list[str]
+
+
+class AgentBlueprintRequest(BaseModel):
+    objective: str = Field(min_length=3)
+    tasks: list[str] = Field(min_length=1)
+    preferred_connectors: list[str] = Field(default_factory=list)
+    risk_level: RiskLevel = RiskLevel.MEDIUM
+
+
+class AgentBlueprint(BaseModel):
+    name: str
+    objective: str
+    role: str
+    tools: list[str]
+    job_templates: list[str]
+    guardrails: list[str]
+
+
+class JobTemplateRequest(BaseModel):
+    name: str = Field(min_length=2)
+    trigger: str
+    task: str
+    expected_output: str
+    approval_required: bool = True
+
+
+class JobTemplate(BaseModel):
+    name: str
+    trigger: str
+    task: str
+    expected_output: str
+    runbook: list[str]
+    approval_required: bool

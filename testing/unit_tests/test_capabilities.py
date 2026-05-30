@@ -110,3 +110,50 @@ def test_browser_and_mobile_capabilities() -> None:
     )
     assert mobile.status_code == 200
     assert mobile.json()["mobile_command"]["project_id"] == "usage-codex"
+
+
+def test_design_system_agent_blueprint_and_job_template_capabilities() -> None:
+    client = _client()
+
+    design_system = client.post(
+        "/v1/capabilities/design-system",
+        json={
+            "brand_name": "APBUILDER",
+            "product_type": "WEBSITE",
+            "visual_direction": "AI-first enterprise builder",
+            "primary_color": "#2563eb",
+            "secondary_color": "#14b8a6",
+        },
+    )
+    assert design_system.status_code == 200
+    design = design_system.json()["design_system"]
+    assert design["tokens"]["color.primary"] == "#2563eb"
+    assert "PreviewWorkbench" in design["components"]
+
+    agent = client.post(
+        "/v1/capabilities/agent-blueprint",
+        json={
+            "objective": "Build and secure SaaS release pipeline",
+            "tasks": ["generate app", "run tests", "prepare release"],
+            "preferred_connectors": ["github", "slack"],
+            "risk_level": "HIGH",
+        },
+    )
+    assert agent.status_code == 200
+    blueprint = agent.json()["agent_blueprint"]
+    assert "github" in blueprint["tools"]
+    assert "human approval required before external side effects" in blueprint["guardrails"]
+
+    job = client.post(
+        "/v1/capabilities/job-template",
+        json={
+            "name": "nightly quality review",
+            "trigger": "0 2 * * *",
+            "task": "run evaluator and summarize regressions",
+            "expected_output": "quality report",
+        },
+    )
+    assert job.status_code == 200
+    template = job.json()["job_template"]
+    assert template["approval_required"] is True
+    assert "load project context and Project Spec IR" in template["runbook"]

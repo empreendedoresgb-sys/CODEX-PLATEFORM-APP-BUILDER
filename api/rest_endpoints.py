@@ -8,6 +8,9 @@ from core.languages.registry import list_languages
 from multilingual.translation_router import route_translation
 from orchestrator import get_orchestrator_run, run_orchestrator
 from orchestrator.capabilities import (
+    build_agent_blueprint,
+    build_design_system,
+    build_job_template,
     build_plugin_chain,
     build_workspace_document,
     create_automation,
@@ -18,9 +21,12 @@ from orchestrator.capabilities import (
     register_skill,
 )
 from orchestrator.contracts import (
+    AgentBlueprintRequest,
     AutomationRecipe,
     BrowserTaskPlan,
     BuildType,
+    DesignSystemRequest,
+    JobTemplateRequest,
     KpiFocus,
     LiveMetricsSnapshot,
     MCPConnectorDefinition,
@@ -76,7 +82,6 @@ class ProjectSpecBuildRequest(BaseModel):
 @app.get("/v1/health")
 def health() -> dict:
     return {"status": "ok", "service": "apbuilder.api", "version": "v1"}
-
 
 
 
@@ -154,7 +159,6 @@ def policy_evaluate(req: TaskEnvelope) -> dict:
 
 
 
-
 @app.post("/v1/capabilities/workspace-document")
 def capability_workspace_document(req: WorkspaceDocumentRequest) -> dict:
     result = build_workspace_document(req)
@@ -196,6 +200,25 @@ def capability_browser_task(req: BrowserTaskPlan) -> dict:
 def capability_mobile_command(req: MobileCommandRequest) -> dict:
     result = queue_mobile_command(req)
     return {"status": "ok", "mobile_command": result.model_dump()}
+
+
+@app.post("/v1/capabilities/design-system")
+def capability_design_system(req: DesignSystemRequest) -> dict:
+    result = build_design_system(req)
+    return {"status": "ok", "design_system": result.model_dump()}
+
+
+@app.post("/v1/capabilities/agent-blueprint")
+def capability_agent_blueprint(req: AgentBlueprintRequest) -> dict:
+    result = build_agent_blueprint(req)
+    return {"status": "ok", "agent_blueprint": result.model_dump()}
+
+
+@app.post("/v1/capabilities/job-template")
+def capability_job_template(req: JobTemplateRequest) -> dict:
+    result = build_job_template(req)
+    return {"status": "ok", "job_template": result.model_dump()}
+
 
 @app.post("/v1/orchestrator/run")
 def orchestrator_run(req: OrchestratorRunRequest) -> dict:
