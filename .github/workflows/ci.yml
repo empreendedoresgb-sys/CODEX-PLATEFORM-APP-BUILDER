@@ -27,5 +27,6 @@ jobs:
           assert 'CREATE TABLE IF NOT EXISTS builder_projects' in sql
           assert 'CREATE TABLE IF NOT EXISTS project_spec_ir' in sql
           assert 'CREATE TABLE IF NOT EXISTS run_scorecards' in sql
+          assert 'CREATE TABLE IF NOT EXISTS capability_blueprints' in sql
           print('schema checks passed')
           PY

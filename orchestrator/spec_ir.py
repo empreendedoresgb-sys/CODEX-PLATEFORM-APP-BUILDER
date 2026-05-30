@@ -1,6 +1,16 @@
 from __future__ import annotations
 
-from orchestrator.contracts import BuildType, ProjectSpecIR
+from orchestrator.contracts import BuildType, CapabilityType, ProjectSpecIR
+
+_BUILD_CAPABILITIES: dict[BuildType, list[CapabilityType]] = {
+    BuildType.APP: [CapabilityType.DOCUMENT, CapabilityType.AUTOMATION, CapabilityType.BROWSER_TASK],
+    BuildType.SOFTWARE: [CapabilityType.DOCUMENT, CapabilityType.SKILL, CapabilityType.PLUGIN_CHAIN],
+    BuildType.MOBILE_APP: [CapabilityType.MOBILE_REQUEST, CapabilityType.AUTOMATION, CapabilityType.IMAGE],
+    BuildType.WEB_PAGE: [CapabilityType.WEB_AUDIT, CapabilityType.IMAGE],
+    BuildType.WEBSITE: [CapabilityType.WEB_AUDIT, CapabilityType.DOCUMENT, CapabilityType.AUTOMATION],
+    BuildType.AGENT: [CapabilityType.SKILL, CapabilityType.MCP_CONNECTOR, CapabilityType.PLUGIN_CHAIN],
+    BuildType.BOT: [CapabilityType.MCP_CONNECTOR, CapabilityType.AUTOMATION, CapabilityType.BROWSER_TASK],
+}
 
 
 def build_spec_ir(prompt: str, build_type: BuildType, target_runtime: str) -> ProjectSpecIR:
@@ -29,4 +39,5 @@ def build_spec_ir(prompt: str, build_type: BuildType, target_runtime: str) -> Pr
         frontend_stack=frontend,
         backend_stack=backend,
         infra_profile=infra,
+        capabilities=_BUILD_CAPABILITIES.get(build_type, []),
     )

@@ -55,3 +55,23 @@ CREATE TABLE IF NOT EXISTS live_kpi_metrics (
     autonomous_ops_success_rate NUMERIC(5,4) NOT NULL DEFAULT 0,
     captured_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS capability_blueprints (
+    capability_id UUID PRIMARY KEY,
+    project_id UUID REFERENCES builder_projects(project_id),
+    capability_type TEXT NOT NULL,
+    name TEXT NOT NULL,
+    config JSONB NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS automation_recipes (
+    automation_id UUID PRIMARY KEY,
+    project_id UUID REFERENCES builder_projects(project_id),
+    title TEXT NOT NULL,
+    schedule TEXT NOT NULL,
+    trigger_condition TEXT NOT NULL,
+    steps JSONB NOT NULL,
+    approval_required BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

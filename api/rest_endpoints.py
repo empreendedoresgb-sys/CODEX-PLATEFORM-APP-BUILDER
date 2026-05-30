@@ -7,7 +7,32 @@ from core.engine_controller import process
 from core.languages.registry import list_languages
 from multilingual.translation_router import route_translation
 from orchestrator import get_orchestrator_run, run_orchestrator
-from orchestrator.contracts import BuildType, KpiFocus, LiveMetricsSnapshot, OrchestratorRunRequest, ProjectSpecIR, TaskEnvelope
+from orchestrator.capabilities import (
+    build_plugin_chain,
+    build_workspace_document,
+    create_automation,
+    plan_browser_task,
+    plan_media_generation,
+    queue_mobile_command,
+    register_mcp_connector,
+    register_skill,
+)
+from orchestrator.contracts import (
+    AutomationRecipe,
+    BrowserTaskPlan,
+    BuildType,
+    KpiFocus,
+    LiveMetricsSnapshot,
+    MCPConnectorDefinition,
+    MediaGenerationRequest,
+    MobileCommandRequest,
+    OrchestratorRunRequest,
+    PluginChainDefinition,
+    ProjectSpecIR,
+    SkillDefinition,
+    TaskEnvelope,
+    WorkspaceDocumentRequest,
+)
 from orchestrator.control_plane import evaluate_policy, route_control_plane, route_control_plane_by_live_metrics
 from orchestrator.master import deploy_run
 from orchestrator.repository import get_events
@@ -127,6 +152,50 @@ def policy_evaluate(req: TaskEnvelope) -> dict:
     decision = evaluate_policy(req)
     return {"status": "ok", "decision": decision.model_dump()}
 
+
+
+
+@app.post("/v1/capabilities/workspace-document")
+def capability_workspace_document(req: WorkspaceDocumentRequest) -> dict:
+    result = build_workspace_document(req)
+    return {"status": "ok", "artifact": result.model_dump()}
+
+
+@app.post("/v1/capabilities/skills")
+def capability_register_skill(req: SkillDefinition) -> dict:
+    return register_skill(req)
+
+
+@app.post("/v1/capabilities/mcp-connectors")
+def capability_register_mcp(req: MCPConnectorDefinition) -> dict:
+    return register_mcp_connector(req)
+
+
+@app.post("/v1/capabilities/plugin-chains")
+def capability_plugin_chain(req: PluginChainDefinition) -> dict:
+    return build_plugin_chain(req)
+
+
+@app.post("/v1/capabilities/media-plan")
+def capability_media_plan(req: MediaGenerationRequest) -> dict:
+    result = plan_media_generation(req)
+    return {"status": "ok", "plan": result.model_dump()}
+
+
+@app.post("/v1/capabilities/automations")
+def capability_automation(req: AutomationRecipe) -> dict:
+    return create_automation(req)
+
+
+@app.post("/v1/capabilities/browser-task")
+def capability_browser_task(req: BrowserTaskPlan) -> dict:
+    return plan_browser_task(req)
+
+
+@app.post("/v1/capabilities/mobile-command")
+def capability_mobile_command(req: MobileCommandRequest) -> dict:
+    result = queue_mobile_command(req)
+    return {"status": "ok", "mobile_command": result.model_dump()}
 
 @app.post("/v1/orchestrator/run")
 def orchestrator_run(req: OrchestratorRunRequest) -> dict:

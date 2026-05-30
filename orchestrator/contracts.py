@@ -50,6 +50,20 @@ class SandboxTier(StrEnum):
     FULLY_ISOLATED = "FULLY_ISOLATED"
 
 
+class CapabilityType(StrEnum):
+    DOCUMENT = "DOCUMENT"
+    SPREADSHEET = "SPREADSHEET"
+    WEB_AUDIT = "WEB_AUDIT"
+    SKILL = "SKILL"
+    MCP_CONNECTOR = "MCP_CONNECTOR"
+    PLUGIN_CHAIN = "PLUGIN_CHAIN"
+    IMAGE = "IMAGE"
+    VIDEO = "VIDEO"
+    AUTOMATION = "AUTOMATION"
+    BROWSER_TASK = "BROWSER_TASK"
+    MOBILE_REQUEST = "MOBILE_REQUEST"
+
+
 class ProjectSpecIR(BaseModel):
     project_name: str = Field(min_length=2)
     build_type: BuildType
@@ -58,6 +72,7 @@ class ProjectSpecIR(BaseModel):
     backend_stack: str = "python-fastapi"
     infra_profile: str = "cloud"
     quality_gates: list[str] = Field(default_factory=lambda: ["tests", "security", "kpi"])
+    capabilities: list[CapabilityType] = Field(default_factory=list)
 
 
 class TaskEnvelope(BaseModel):
@@ -138,3 +153,81 @@ class OrchestratorRunResult(BaseModel):
     audit_trail: list[AuditEvent] = Field(default_factory=list)
     spec: ProjectSpecIR | None = None
     scorecard: RunScorecard | None = None
+
+
+class WorkspaceDocumentRequest(BaseModel):
+    source_folder: str = "workspace"
+    output_type: CapabilityType = CapabilityType.DOCUMENT
+    title: str
+    summary_goal: str
+
+
+class WorkspaceDocumentResult(BaseModel):
+    artifact_type: CapabilityType
+    title: str
+    output_path: str
+    sections: list[str]
+
+
+class SkillDefinition(BaseModel):
+    name: str = Field(min_length=2)
+    description: str
+    required_connectors: list[str] = Field(default_factory=list)
+    required_skills: list[str] = Field(default_factory=list)
+    instructions: list[str] = Field(default_factory=list)
+
+
+class MCPConnectorDefinition(BaseModel):
+    name: str = Field(min_length=2)
+    provider: str
+    scopes: list[str] = Field(default_factory=list)
+    endpoint: str | None = None
+
+
+class PluginChainDefinition(BaseModel):
+    name: str = Field(min_length=2)
+    skills: list[str] = Field(min_length=1)
+    connectors: list[str] = Field(default_factory=list)
+    output_goal: str
+
+
+class MediaGenerationRequest(BaseModel):
+    prompt: str
+    media_type: CapabilityType = CapabilityType.IMAGE
+    brand_reference: str | None = None
+    aspect_ratio: str = "4:5"
+
+
+class MediaGenerationPlan(BaseModel):
+    media_type: CapabilityType
+    prompt: str
+    generation_steps: list[str]
+    quality_checks: list[str]
+
+
+class AutomationRecipe(BaseModel):
+    title: str = Field(min_length=2)
+    schedule: str
+    trigger_condition: str
+    steps: list[str] = Field(min_length=1)
+    connectors: list[str] = Field(default_factory=list)
+    approval_required: bool = True
+
+
+class BrowserTaskPlan(BaseModel):
+    url: str
+    objective: str
+    extracted_fields: list[str] = Field(default_factory=list)
+    requires_human_validation: bool = True
+
+
+class MobileCommandRequest(BaseModel):
+    command: str
+    project_id: str = "default"
+    requested_from: str = "mobile"
+
+
+class MobileCommandPlan(BaseModel):
+    command: str
+    project_id: str
+    queued_actions: list[str]

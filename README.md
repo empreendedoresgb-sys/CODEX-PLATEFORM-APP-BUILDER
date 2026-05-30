@@ -37,6 +37,14 @@ pytest
 - `POST /v1/spec-ir/build`
 - `POST /v1/spec-ir/validate`
 - `POST /v1/control-plane/route/live`
+- `POST /v1/capabilities/workspace-document`
+- `POST /v1/capabilities/skills`
+- `POST /v1/capabilities/mcp-connectors`
+- `POST /v1/capabilities/plugin-chains`
+- `POST /v1/capabilities/media-plan`
+- `POST /v1/capabilities/automations`
+- `POST /v1/capabilities/browser-task`
+- `POST /v1/capabilities/mobile-command`
 
 ## Preview smoke test
 
@@ -123,3 +131,17 @@ Use `build_type` in `POST /v1/orchestrator/run` to steer generated domain artifa
 ## Preview button quick link
 
 Open: `http://127.0.0.1:8000/v1/preview/button` to click **Launch App Preview** and jump to `/docs`.
+
+
+## Codex-inspired capability layer
+
+APBUILDER now includes API scaffolding for the functionality extracted from the Codex workflow video:
+
+- workspace document generation for invoices, spreadsheets, reports, and web audits
+- skill creation and invocation metadata
+- MCP connector registration with scoped authorization notes
+- plugin-chain orchestration that sequences skills and connectors
+- image/video generation planning with brand references and quality checks
+- scheduled automation recipes with human approval defaults
+- browser task planning with validation-before-submit guardrails
+- mobile command queue planning for phone-to-workspace requests
