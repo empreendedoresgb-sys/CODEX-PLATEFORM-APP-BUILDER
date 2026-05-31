@@ -120,3 +120,64 @@ CREATE TABLE IF NOT EXISTS interaction_suite_blueprints (
     quality_gates JSONB NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+
+CREATE TABLE IF NOT EXISTS auth_identities (
+    identity_id UUID PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES users(user_id),
+    provider TEXT NOT NULL,
+    provider_subject TEXT NOT NULL,
+    email_verified BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (provider, provider_subject)
+);
+
+CREATE TABLE IF NOT EXISTS team_memberships (
+    membership_id UUID PRIMARY KEY,
+    project_id UUID NOT NULL REFERENCES builder_projects(project_id),
+    user_id UUID NOT NULL REFERENCES users(user_id),
+    role TEXT NOT NULL CHECK (role IN ('owner', 'admin', 'builder', 'viewer')),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (project_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS billing_accounts (
+    billing_account_id UUID PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES users(user_id),
+    provider TEXT NOT NULL,
+    provider_customer_id TEXT NOT NULL,
+    billing_email TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (provider, provider_customer_id)
+);
+
+CREATE TABLE IF NOT EXISTS subscriptions (
+    subscription_id UUID PRIMARY KEY,
+    billing_account_id UUID NOT NULL REFERENCES billing_accounts(billing_account_id),
+    plan TEXT NOT NULL CHECK (plan IN ('free', 'pro', 'enterprise')),
+    status TEXT NOT NULL CHECK (status IN ('trialing', 'active', 'past_due', 'canceled')),
+    current_period_end TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS payment_events (
+    payment_event_id UUID PRIMARY KEY,
+    billing_account_id UUID REFERENCES billing_accounts(billing_account_id),
+    provider TEXT NOT NULL,
+    provider_event_id TEXT NOT NULL,
+    event_type TEXT NOT NULL,
+    payload JSONB NOT NULL,
+    processed_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (provider, provider_event_id)
+);
+
+CREATE TABLE IF NOT EXISTS app_foundation_blueprints (
+    foundation_id UUID PRIMARY KEY,
+    project_id UUID REFERENCES builder_projects(project_id),
+    product_goal TEXT NOT NULL,
+    launch_tier TEXT NOT NULL,
+    foundations JSONB NOT NULL,
+    readiness_checks JSONB NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

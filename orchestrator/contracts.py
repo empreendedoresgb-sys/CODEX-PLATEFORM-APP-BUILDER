@@ -82,6 +82,14 @@ class CapabilityType(StrEnum):
     EXCEL_MODEL = "EXCEL_MODEL"
     DEEP_MODEL = "DEEP_MODEL"
     SPEED_OPTIMIZATION = "SPEED_OPTIMIZATION"
+    AUTHENTICATION = "AUTHENTICATION"
+    BILLING = "BILLING"
+    ONBOARDING = "ONBOARDING"
+    TEMPLATE_MARKETPLACE = "TEMPLATE_MARKETPLACE"
+    ANALYTICS = "ANALYTICS"
+    NOTIFICATIONS = "NOTIFICATIONS"
+    TEAM_RBAC = "TEAM_RBAC"
+    APP_SHELL = "APP_SHELL"
 
 
 class ProjectSpecIR(BaseModel):
@@ -324,3 +332,28 @@ class InteractionSuiteBlueprint(BaseModel):
     modules: list[CapabilityModule]
     rollout_phases: list[str]
     quality_gates: list[str]
+
+
+class FoundationSuiteRequest(BaseModel):
+    product_goal: str = Field(min_length=3)
+    launch_tier: str = "pro"
+    include_payments: bool = True
+    include_enterprise: bool = True
+
+
+class FoundationBlueprint(BaseModel):
+    name: str
+    capability_type: CapabilityType
+    priority: str
+    api_surface: str
+    data_tables: list[str]
+    guardrails: list[str]
+    implementation_notes: list[str]
+
+
+class FoundationSuiteBlueprint(BaseModel):
+    product_goal: str
+    launch_tier: str
+    foundations: list[FoundationBlueprint]
+    launch_sequence: list[str]
+    readiness_checks: list[str]

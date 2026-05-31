@@ -10,6 +10,7 @@ from orchestrator import get_orchestrator_run, run_orchestrator
 from orchestrator.capabilities import (
     build_agent_blueprint,
     build_design_system,
+    build_foundation_suite,
     build_interaction_suite,
     build_job_template,
     build_plugin_chain,
@@ -27,6 +28,7 @@ from orchestrator.contracts import (
     BrowserTaskPlan,
     BuildType,
     DesignSystemRequest,
+    FoundationSuiteRequest,
     InteractionSuiteRequest,
     JobTemplateRequest,
     KpiFocus,
@@ -109,11 +111,21 @@ LANDING_PAGE_HTML = """
         letter-spacing: 0.08em;
       }
       .brand-mark {
+        position: relative;
         width: 38px;
         height: 38px;
         border-radius: 14px;
         background: linear-gradient(135deg, var(--blue), var(--violet), var(--green));
         box-shadow: 0 0 34px rgba(56, 189, 248, 0.55);
+        animation: logo-drift 5.2s ease-in-out infinite;
+      }
+      .brand-mark::after {
+        content: "";
+        position: absolute;
+        inset: 8px;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.7);
+        animation: logo-core 2.8s ease-in-out infinite;
       }
       nav { display: flex; gap: 14px; flex-wrap: wrap; }
       nav a {
@@ -245,21 +257,64 @@ LANDING_PAGE_HTML = """
       }
       .card h3 { margin: 0 0 10px; }
       .card p { margin: 0; color: var(--muted); line-height: 1.6; }
+      .mode-pill {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        margin-left: 10px;
+        padding: 7px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(255,255,255,0.06);
+        color: #dbeafe;
+        font-size: 0.84rem;
+      }
+      .orbit { position: relative; min-height: 130px; margin-top: 18px; }
+      .orbit-item {
+        position: absolute;
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 16px;
+        background: rgba(15, 23, 42, 0.86);
+        border: 1px solid var(--line);
+        box-shadow: 0 14px 30px rgba(0,0,0,0.24);
+        animation: bob 4s ease-in-out infinite;
+      }
+      .orbit-item:nth-child(1) { left: 8%; top: 12%; }
+      .orbit-item:nth-child(2) { left: 38%; top: 0; animation-delay: .5s; }
+      .orbit-item:nth-child(3) { right: 18%; top: 26%; animation-delay: 1s; }
+      .orbit-item:nth-child(4) { left: 24%; bottom: 0; animation-delay: 1.5s; }
+      .essentials {
+        max-width: 1180px;
+        margin: 0 auto 84px;
+        padding: 0 clamp(20px, 5vw, 40px);
+      }
+      .essentials h2 { font-size: clamp(2rem, 4vw, 3.4rem); letter-spacing: -0.05em; margin: 0 0 16px; }
+      .essential-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+      .essential { border: 1px solid var(--line); border-radius: 24px; padding: 22px; background: rgba(15, 23, 42, 0.64); transition: transform .2s ease, border-color .2s ease; }
+      .essential:hover { transform: translateY(-6px); border-color: rgba(94, 234, 212, 0.55); }
+      .essential b { color: white; }
+      .essential p { color: var(--muted); line-height: 1.6; margin-bottom: 0; }
       @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.55); } 70% { box-shadow: 0 0 0 12px rgba(45, 212, 191, 0); } 100% { box-shadow: 0 0 0 0 rgba(45, 212, 191, 0); } }
       @keyframes shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 280% 50%; } }
       @keyframes sweep { 0%, 30% { transform: translateX(-120%); } 70%, 100% { transform: translateX(120%); } }
       @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+      @keyframes logo-drift { 0%,100% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(8deg) scale(1.08); } }
+      @keyframes logo-core { 0%,100% { transform: scale(.86); opacity: .6; } 50% { transform: scale(1.15); opacity: 1; } }
+      @keyframes bob { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-12px) rotate(4deg); } }
       @media (max-width: 860px) {
         header { align-items: flex-start; flex-direction: column; }
         .hero { grid-template-columns: 1fr; padding-top: 34px; }
-        .cards { grid-template-columns: 1fr; }
+        .cards, .essential-grid { grid-template-columns: 1fr; }
       }
     </style>
   </head>
   <body>
     <div class="grid-glow"></div>
     <header>
-      <div class="brand"><span class="brand-mark"></span><span>APBUILDER.APP</span></div>
+      <div class="brand"><span class="brand-mark"></span><span>APBUILDER.APP</span><span class="mode-pill">Dark / Light ready</span></div>
       <nav aria-label="Primary navigation">
         <a href="/docs">API Docs</a>
         <a href="/v1/preview/button">Preview</a>
@@ -281,6 +336,12 @@ LANDING_PAGE_HTML = """
             <a class="secondary-button" href="/v1/preview/button">Open Preview Button</a>
             <a class="secondary-button" href="/docs">Explore Capabilities</a>
           </div>
+          <div class="orbit" aria-label="Animated app-builder capability icons">
+            <span class="orbit-item">🔐</span>
+            <span class="orbit-item">💳</span>
+            <span class="orbit-item">🚀</span>
+            <span class="orbit-item">🤖</span>
+          </div>
         </div>
         <aside class="panel" aria-label="Build pipeline preview">
           <div class="terminal">
@@ -300,6 +361,14 @@ LANDING_PAGE_HTML = """
         <article class="card"><h3>Agents</h3><p>Intent, architect, generator, validator, release, research, UX, security, and growth roles.</p></article>
         <article class="card"><h3>Automation</h3><p>Scheduled tasks, skills, plugins, connectors, browser actions, and mobile-to-workspace commands.</p></article>
         <article class="card"><h3>Governance</h3><p>Policy plane, sandbox tiers, audit trails, scorecards, approvals, and rollback plans.</p></article>
+      </section>
+      <section class="essentials" aria-label="App builder essentials">
+        <h2>Everything an app builder needs from day one.</h2>
+        <div class="essential-grid">
+          <article class="essential"><b>Authentication</b><p>Passwordless, OAuth-ready identity, tenant isolation, team roles, and enterprise MFA planning.</p></article>
+          <article class="essential"><b>Payments</b><p>Free/pro/enterprise plans, subscriptions, usage credits, invoices, webhook safety, and upgrade flows.</p></article>
+          <article class="essential"><b>Builder Workspace</b><p>Projects, templates, previews, deploys, analytics, notifications, and governed AI automations.</p></article>
+        </div>
       </section>
     </main>
   </body>
@@ -495,6 +564,12 @@ def capability_job_template(req: JobTemplateRequest) -> dict:
 def capability_interaction_suite(req: InteractionSuiteRequest) -> dict:
     result = build_interaction_suite(req)
     return {"status": "ok", "interaction_suite": result.model_dump()}
+
+
+@app.post("/v1/capabilities/foundation-suite")
+def capability_foundation_suite(req: FoundationSuiteRequest) -> dict:
+    result = build_foundation_suite(req)
+    return {"status": "ok", "foundation_suite": result.model_dump()}
 
 
 @app.post("/v1/orchestrator/run")

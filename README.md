@@ -51,18 +51,25 @@ pytest
 - `POST /v1/capabilities/agent-blueprint`
 - `POST /v1/capabilities/job-template`
 - `POST /v1/capabilities/interaction-suite`
+- `POST /v1/capabilities/foundation-suite`
 
 
 
 ## Landing page
 
-APBUILDER includes a built-in animated landing page at `GET /` and `GET /v1/landing`. It ships with a gradient hero, animated preview CTA button, responsive feature cards, and quick links to API docs and preview tooling.
+APBUILDER includes a built-in animated landing page at `GET /` and `GET /v1/landing`. It ships with a gradient hero, animated logo, floating capability icons, dark/light mode pill, animated preview CTA button, responsive feature cards, app-builder essentials, and quick links to API docs and preview tooling.
 
 Open locally after starting the API:
 
 ```bash
 http://127.0.0.1:8000/
 ```
+
+
+
+## App foundation suite
+
+`POST /v1/capabilities/foundation-suite` defines the baseline every serious app builder needs: authentication, billing/payments, onboarding, app shell, template marketplace, analytics, notifications, team RBAC, and enterprise controls. The generated blueprint is policy-first and includes guardrails for tenant isolation, webhook signature verification, no raw card storage, privacy-safe analytics, and least-privilege roles.
 
 ## Preview smoke test
 

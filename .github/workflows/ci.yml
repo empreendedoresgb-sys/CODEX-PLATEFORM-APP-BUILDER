@@ -32,5 +32,10 @@ jobs:
           assert 'CREATE TABLE IF NOT EXISTS agent_blueprints' in sql
           assert 'CREATE TABLE IF NOT EXISTS job_templates' in sql
           assert 'CREATE TABLE IF NOT EXISTS interaction_suite_blueprints' in sql
+          assert 'CREATE TABLE IF NOT EXISTS auth_identities' in sql
+          assert 'CREATE TABLE IF NOT EXISTS billing_accounts' in sql
+          assert 'CREATE TABLE IF NOT EXISTS subscriptions' in sql
+          assert 'CREATE TABLE IF NOT EXISTS payment_events' in sql
+          assert 'CREATE TABLE IF NOT EXISTS app_foundation_blueprints' in sql
           print('schema checks passed')
           PY

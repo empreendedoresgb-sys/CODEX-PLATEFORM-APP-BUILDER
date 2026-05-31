@@ -185,3 +185,29 @@ def test_interaction_suite_maps_claude_style_capabilities() -> None:
     assert "SPEED_OPTIMIZATION" in capability_types
     assert "policy approval before side effects" in suite["quality_gates"]
     assert len(suite["modules"]) >= 20
+
+
+def test_foundation_suite_includes_auth_payments_and_rbac() -> None:
+    client = _client()
+
+    response = client.post(
+        "/v1/capabilities/foundation-suite",
+        json={
+            "product_goal": "Launch APBUILDER as a paid AI app builder",
+            "launch_tier": "pro",
+            "include_payments": True,
+            "include_enterprise": True,
+        },
+    )
+    assert response.status_code == 200
+    suite = response.json()["foundation_suite"]
+    capability_types = {foundation["capability_type"] for foundation in suite["foundations"]}
+    data_tables = {table for foundation in suite["foundations"] for table in foundation["data_tables"]}
+
+    assert "AUTHENTICATION" in capability_types
+    assert "BILLING" in capability_types
+    assert "TEAM_RBAC" in capability_types
+    assert "auth_identities" in data_tables
+    assert "billing_accounts" in data_tables
+    assert "payment_events" in data_tables
+    assert "billing blueprint avoids raw card storage and requires signed webhooks" in suite["readiness_checks"]

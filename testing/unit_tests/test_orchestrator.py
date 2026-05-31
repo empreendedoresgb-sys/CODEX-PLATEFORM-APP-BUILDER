@@ -235,6 +235,9 @@ def test_landing_page_has_animated_preview_cta() -> None:
     assert "Launch Live Preview" in response.text
     assert "@keyframes shimmer" in response.text
     assert "AI-first app, web, agent & bot builder" in response.text
+    assert "Authentication" in response.text
+    assert "Payments" in response.text
+    assert "@keyframes logo-drift" in response.text
 
     v1_response = client.get("/v1/landing")
     assert v1_response.status_code == 200
