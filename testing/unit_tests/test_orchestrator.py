@@ -218,3 +218,24 @@ def test_orchestrator_deploy_not_ready() -> None:
     deployed = client.post(f"/v1/orchestrator/runs/{run_id}/deploy")
     assert deployed.status_code == 200
     assert deployed.json()["status"] == "failed"
+
+
+def test_landing_page_has_animated_preview_cta() -> None:
+    import pytest
+
+    pytest.importorskip("httpx")
+    from fastapi.testclient import TestClient
+
+    from api.rest_endpoints import app
+
+    client = TestClient(app)
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "APBUILDER.APP" in response.text
+    assert "Launch Live Preview" in response.text
+    assert "@keyframes shimmer" in response.text
+    assert "AI-first app, web, agent & bot builder" in response.text
+
+    v1_response = client.get("/v1/landing")
+    assert v1_response.status_code == 200
+    assert "Build software at orchestration speed" in v1_response.text

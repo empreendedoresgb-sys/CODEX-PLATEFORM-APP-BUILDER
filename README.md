@@ -24,6 +24,8 @@ pytest
 
 - `WS /v1/ws/events?run_id={run_id}`
 - `GET /v1/orchestrator/runs/{run_id}/events`
+- `GET /`
+- `GET /v1/landing`
 - `GET /v1/health`
 - `GET /v1/preview/button`
 - `GET /v1/languages`
@@ -49,6 +51,18 @@ pytest
 - `POST /v1/capabilities/agent-blueprint`
 - `POST /v1/capabilities/job-template`
 - `POST /v1/capabilities/interaction-suite`
+
+
+
+## Landing page
+
+APBUILDER includes a built-in animated landing page at `GET /` and `GET /v1/landing`. It ships with a gradient hero, animated preview CTA button, responsive feature cards, and quick links to API docs and preview tooling.
+
+Open locally after starting the API:
+
+```bash
+http://127.0.0.1:8000/
+```
 
 ## Preview smoke test
 
