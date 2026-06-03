@@ -1,33 +1,39 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://kriolgb-ia.com/schemas/voice_profile.schema.json",
-  "title": "KriolGB Voice Profile",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": [
-    "profile_id",
-    "voice_id",
-    "language",
-    "phonetic_mode",
-    "cadence_type",
-    "emotional_mode",
-    "character_mode",
-    "created_at"
-  ],
+  "title": "Voice Profile Schema",
+  "description": "Schema definition for voice profile configuration",
   "properties": {
-    "profile_id": { "type": "string", "minLength": 3 },
-    "voice_id": { "type": "string", "minLength": 3 },
-    "language": { "type": "string", "enum": ["kriol", "pt", "fr", "en"] },
-    "phonetic_mode": { "type": "string", "const": "african" },
-    "cadence_type": {
+    "id": {
       "type": "string",
-      "enum": ["slow_ceremonial", "fast_market_speech", "griot_storytelling", "political_rally_rhythm"]
+      "description": "Unique identifier for the voice profile"
     },
-    "emotional_mode": { "type": "string" },
-    "character_mode": { "type": "string" },
-    "pitch": { "type": "number", "minimum": 0.5, "maximum": 2.0, "default": 1.0 },
-    "tempo": { "type": "number", "minimum": 0.5, "maximum": 2.0, "default": 1.0 },
-    "energy": { "type": "number", "minimum": 0.1, "maximum": 3.0, "default": 1.0 },
-    "created_at": { "type": "string", "format": "date-time" }
+    "name": {
+      "type": "string",
+      "description": "Name of the voice profile"
+    },
+    "language": {
+      "type": "string",
+      "description": "Language code for the voice profile"
+    },
+    "pitch": {
+      "type": "number",
+      "description": "Pitch level for the voice",
+      "minimum": 0.5,
+      "maximum": 2.0
+    },
+    "rate": {
+      "type": "number",
+      "description": "Speech rate",
+      "minimum": 0.5,
+      "maximum": 2.0
+    },
+    "volume": {
+      "type": "number",
+      "description": "Volume level",
+      "minimum": 0,
+      "maximum": 1
+    }
   },
-  "additionalProperties": false
+  "required": ["id", "name", "language"]
 }
